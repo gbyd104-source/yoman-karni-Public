@@ -322,10 +322,53 @@
 const SHEET_URL = 'https://script.google.com/macros/s/AKfycbxSMWVQdPvH1Wdo2CoUBVMZ9l1UjViRMDg_ZMTTnhUSWb8m-9mtOIcZsSuBZe5hm4nGnQ/exec';
 
 const BUILDINGS = {
-  'בלינסון': ['גור שאשא','דוידוף','נשים','מרפאות','חדרי ניתוח','מעבדות','מיון','מכלול מערבי','שניידר','מוקד אחזקה','פתולוגיה','אחר'],
-  'השרון':   ['בניין ראשי','מרפאות','מיון','ניתוחים','מעבדות','אחר'],
+  'בלינסון': ['גור שאשא','דוידוף','נשים','מרפאות','חדרי ניתוח','מעבדות','מיון','מכלול מערבי','שניידר','מוקד אחזקה','פתולוגיה','בית ספר לאחיות','מטבח','יולדות','חניון','פנימית ב','פנימית ג','פנימית ד','פנימית ה','פנימית ו','אחר'],
+  'השרון':   ['פנימית ב','פנימית ג','פנימית ד','פנימית ה','פנימית ו','טיפול נמרץ לב','דיאליזה','מטבח ראשי','בית ספר לאחיות','חדר מכונות','חדרי ניתוח','מעבדות','בית כנסת','קפיטריה','אחר'],
   'גהה':     ['בניין ראשי','מרפאות','מיון','אחר'],
   'כרמיאל':  ['בניין ראשי','אחר'],
+};
+
+const FLOORS = {
+  'בלינסון': {
+    'גור שאשא': ['קומה -1','קומה 0','קומה 1','קומה 2','קומה 3','קומה 4','קומה 5','קומה 6','קומה 7','קומה 8','קומה 9','גג'],
+    'דוידוף': ['קומה -1','קומה 0','קומה 1','קומה 2','קומה 3','קומה 4','קומה 5','קומה 6','קומה 7','קומה 8','קומה 9','גג','חדר מכונות'],
+    'נשים': ['קומה 0','קומה 1','קומה 2','קומה 3','קומה 4','גג'],
+    'מרפאות': ['קומה 0','קומה 1','קומה 2','קומה 3','קומה 4','גג'],
+    'חדרי ניתוח': ['קומה 0','קומה 1','אגף ניתוחים'],
+    'מעבדות': ['קומה 0','קומה 1','קומה 2','קומה 3','קומה 4','קומה 5','גג'],
+    'מיון': ['מינוס 2','מינוס 1','קומה 0'],
+    'מכלול מערבי': ['קומה 0','קומה 1','קומה 2','גג'],
+    'שניידר': ['קומה 0','קומה 1','קומה 2','קומה 3','גג'],
+    'מוקד אחזקה': ['מחסן','חדר מכונות','כללי'],
+    'פתולוגיה': ['קומה 0','קומה 1'],
+    'בית ספר לאחיות': ['קומה 0','קומה 1','גג'],
+    'מטבח': ['מטבח ראשי','מטבח חלוקה','גג'],
+    'יולדות': ['קומה 0','קומה 1','קומה 2','קומה 3'],
+    'חניון': ['קומה -1','קומה -2','רמפה'],
+    'פנימית ב': ['קומה 0','קומה 1','קומה 2','קומה 3','גג'],
+    'פנימית ג': ['קומה 0','קומה 1','קומה 2','קומה 3','גג'],
+    'פנימית ד': ['קומה 0','קומה 1','קומה 2','קומה 3','גג'],
+    'פנימית ה': ['קומה 0','קומה 1','קומה 2','קומה 3','גג'],
+    'פנימית ו': ['קומה 0','קומה 1','קומה 2','קומה 3','גג'],
+  },
+  'השרון': {
+    'פנימית ב': ['קומה 0','קומה 1','קומה 2','קומה 3','גג'],
+    'פנימית ג': ['קומה 0','קומה 1','קומה 2','קומה 3','גג'],
+    'פנימית ד': ['קומה 0','קומה 1','קומה 2','גג'],
+    'פנימית ה': ['קומה 0','קומה 1','קומה 2','קומה 3','גג'],
+    'פנימית ו': ['קומה 0','קומה 1','קומה 2','קומה 3','גג'],
+    'טיפול נמרץ לב': ['קומה 1','קומה 2'],
+    'דיאליזה': ['קומה 0','קומה 1'],
+    'מטבח ראשי': ['קומה 0','גג'],
+    'בית ספר לאחיות': ['קומה 0','קומה 1','גג'],
+    'חדר מכונות': ['מרתף','קומה 0'],
+    'חדרי ניתוח': ['קומה 1','קומה 2'],
+    'מעבדות': ['קומה 0','קומה 1'],
+    'בית כנסת': ['קומה 0'],
+    'קפיטריה': ['קומה 0'],
+  },
+  'גהה': { 'בניין ראשי': ['קומה 0','קומה 1','קומה 2','גג'], },
+  'כרמיאל': { 'בניין ראשי': ['קומה 0','קומה 1','גג'], },
 };
 
 const LOCATIONS = {
@@ -678,6 +721,24 @@ function updateAttSummary() {
     : '<span style="color:var(--gray-mid)">לא נבחר עדיין</span>';
 }
 
+function loadSettingsFromSheet() {
+  const url = 'https://script.google.com/macros/s/AKfycbxSMWVQdPvH1Wdo2CoUBVMZ9l1UjViRMDg_ZMTTnhUSWb8m-9mtOIcZsSuBZe5hm4nGnQ/exec?action=getSettings';
+  fetch(url, { method: 'GET', mode: 'cors' })
+    .then(r => r.json())
+    .then(data => {
+      if (data && data.buildings) {
+        // עדכן BUILDINGS ו-FLOORS מהגיליון
+        Object.keys(data.buildings).forEach(proj => {
+          BUILDINGS[proj] = Object.keys(data.buildings[proj]);
+          BUILDINGS[proj].push('אחר');
+          FLOORS[proj] = data.buildings[proj];
+        });
+        console.log('✅ הגדרות נטענו מהגיליון');
+      }
+    })
+    .catch(e => console.log('⚠️ לא ניתן לטעון הגדרות — משתמש בברירת מחדל'));
+}
+
 function initDate() {
   const now = new Date();
   document.getElementById('today-day').textContent = now.getDate();
@@ -728,7 +789,24 @@ function selectBuilding(b, btn) {
   document.getElementById('building').value = b;
   document.getElementById('building_custom').value = '';
   document.getElementById('building_custom').style.display = 'none';
+  updateFloors(b);
   updateProgress();
+}
+
+function updateFloors(building) {
+  const proj = document.getElementById('project').value;
+  const grid = document.getElementById('location-grid');
+  selectedLocation = '';
+  document.getElementById('location').value = '';
+  document.querySelectorAll('.location-btn').forEach(b => b.classList.remove('selected'));
+  const floors = (FLOORS[proj] && FLOORS[proj][building]) ? FLOORS[proj][building] : [];
+  if (floors.length === 0) {
+    grid.innerHTML = '<div style="grid-column:1/-1;color:#9E9E9E;font-size:13px;text-align:center;padding:10px">בחר קומה / אזור ↓ או הקלד ידנית</div>';
+    return;
+  }
+  grid.innerHTML = floors.map(f =>
+    `<button type="button" class="location-btn" onclick="selectLocation('${f}',this)">${f}</button>`
+  ).join('') + '<button type="button" class="location-btn" onclick="selectLocation('אחר',this)">אחר</button>';
 }
 
 function showCustomBuilding() {
@@ -1054,6 +1132,8 @@ function resetForm() {
 
 initDate();
 addTask();
+// טען הגדרות מגיליון
+loadSettingsFromSheet();
 // נוכחות — לאחר טעינת DOM
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', initAttendance);
