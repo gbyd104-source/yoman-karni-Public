@@ -1,0 +1,935 @@
+<!DOCTYPE html>
+<!-- saved from url=(0119)file:///C:/Users/user/Downloads/%D7%99%D7%95%D7%9E%D7%9F_%D7%A2%D7%91%D7%95%D7%93%D7%94_%D7%98%D7%95%D7%A4%D7%A1_4.html -->
+<html lang="he" dir="rtl"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>יומן עבודה — קרני השחר | سجل العمل</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --navy: #1A237E; --blue: #1565C0; --light-blue: #E3F2FD;
+    --green: #2E7D32; --light-green: #E8F5E9;
+    --orange: #E65100; --light-orange: #FFF3E0;
+    --gray-dark: #212121; --gray-mid: #616161; --gray-light: #F5F5F5;
+    --white: #FFFFFF; --border: #BDBDBD; --red: #C62828;
+  }
+  body { font-family: 'Segoe UI', Arial, sans-serif; background: var(--gray-light); color: var(--gray-dark); min-height: 100vh; padding-bottom: 40px; }
+
+  .header { background: var(--navy); color: white; padding: 14px 16px 10px; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 8px rgba(0,0,0,0.3); }
+  .header-top { display: flex; justify-content: space-between; align-items: center; }
+  .header h1 { font-size: 17px; font-weight: 700; }
+  .header .company { font-size: 11px; color: #90CAF9; margin-top: 2px; }
+  .date-badge { background: #1565C0; border-radius: 8px; padding: 5px 10px; text-align: center; min-width: 68px; }
+  .date-badge .day { font-size: 20px; font-weight: 800; line-height: 1; }
+  .date-badge .month { font-size: 10px; color: #90CAF9; }
+  .progress-bar { background: #0D47A1; height: 3px; margin-top: 10px; border-radius: 2px; overflow: hidden; }
+  .progress-fill { height: 100%; background: #42A5F5; width: 0%; transition: width 0.3s; }
+  .lang-bar { display: flex; background: #0D47A1; border-radius: 6px; overflow: hidden; margin-top: 8px; }
+  .lang-btn { flex: 1; padding: 6px; border: none; background: transparent; color: rgba(255,255,255,0.6); font-size: 13px; font-weight: 600; cursor: pointer; font-family: inherit; }
+  .lang-btn.active { background: white; color: var(--navy); }
+
+  .section { background: white; margin: 10px 10px 0; border-radius: 12px; overflow: hidden; box-shadow: 0 1px 4px rgba(0,0,0,0.1); }
+  .section-header { background: var(--navy); color: white; padding: 11px 14px; font-size: 13px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+  .section-header .num { background: rgba(255,255,255,0.2); border-radius: 50%; width: 22px; height: 22px; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 800; flex-shrink: 0; }
+  .section-body { padding: 14px; }
+
+  .field { margin-bottom: 13px; }
+  .field:last-child { margin-bottom: 0; }
+  label { display: block; font-size: 12px; font-weight: 600; color: var(--gray-mid); margin-bottom: 5px; }
+  .req { color: var(--red); }
+  input[type="text"], input[type="date"], input[type="time"], input[type="number"], select, textarea {
+    width: 100%; padding: 11px 13px; border: 1.5px solid var(--border); border-radius: 8px;
+    font-size: 16px; font-family: inherit; color: var(--gray-dark); background: white;
+    direction: rtl; -webkit-appearance: none; transition: border-color 0.2s;
+  }
+  input:focus, select:focus, textarea:focus { outline: none; border-color: var(--blue); box-shadow: 0 0 0 3px rgba(21,101,192,0.12); }
+  textarea { min-height: 75px; resize: vertical; }
+  select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23616161' stroke-width='2' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: left 12px center; padding-left: 32px; }
+  .hint { font-size: 11px; color: var(--gray-mid); margin-top: 3px; }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .divider { height: 1px; background: #EEE; margin: 12px 0; }
+
+  /* LOCATION */
+  .location-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; }
+  .location-btn { padding: 11px 6px; border: 2px solid var(--border); border-radius: 8px; background: white; font-size: 12px; font-weight: 600; color: var(--gray-dark); cursor: pointer; text-align: center; font-family: inherit; transition: all 0.15s; }
+  .location-btn.selected { background: var(--navy); color: white; border-color: var(--navy); }
+
+  /* TASKS — כל עבודה = כרטיס */
+  .tasks-container { display: flex; flex-direction: column; gap: 12px; }
+  .task-card {
+    border: 2px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    background: white;
+  }
+  .task-card.filled { border-color: #81C784; }
+  .task-card-header {
+    background: #E8EAF6;
+    padding: 10px 14px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--navy);
+  }
+  .task-card-body { padding: 13px; display: flex; flex-direction: column; gap: 11px; }
+  .remove-task { background: none; border: none; color: var(--red); font-size: 18px; cursor: pointer; padding: 2px 6px; line-height: 1; border-radius: 4px; }
+
+  /* WORKERS inside task */
+  .workers-in-task { display: flex; flex-direction: column; gap: 7px; }
+  .worker-row-small { display: grid; grid-template-columns: 2fr 1.2fr 0.8fr auto; gap: 6px; align-items: center; }
+  .worker-row-small input, .worker-row-small select { font-size: 14px; padding: 8px 10px; }
+  .remove-worker-small { background: none; border: none; color: var(--red); font-size: 16px; cursor: pointer; padding: 4px; }
+  .add-worker-small { background: var(--light-blue); border: 1.5px dashed #90CAF9; border-radius: 7px; color: var(--blue); font-size: 13px; font-weight: 600; padding: 8px; cursor: pointer; width: 100%; font-family: inherit; margin-top: 2px; }
+
+  /* MATERIALS */
+  .materials-container { display: flex; flex-direction: column; gap: 6px; }
+  .material-row { display: grid; grid-template-columns: 2fr 1fr 0.8fr auto; gap: 6px; align-items: center; }
+  .material-row input, .material-row select { font-size: 14px; padding: 8px 10px; }
+  .remove-material { background: none; border: none; color: var(--red); font-size: 16px; cursor: pointer; padding: 4px; }
+  .add-material-btn { background: var(--light-orange); border: 1.5px dashed #FFCC80; border-radius: 7px; color: var(--orange); font-size: 13px; font-weight: 600; padding: 8px; cursor: pointer; width: 100%; font-family: inherit; margin-top: 2px; }
+
+  .add-task-btn { width: 100%; padding: 13px; background: var(--light-blue); border: 2px dashed #90CAF9; border-radius: 10px; color: var(--blue); font-size: 15px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 10px; font-family: inherit; }
+
+  /* PHOTOS */
+  .photos-sub-section { border: 1px solid #EEE; border-radius: 8px; padding: 10px; background: #FAFAFA; }
+  .photos-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 7px; margin-top: 8px; }
+  .photo-thumb { position: relative; aspect-ratio: 1; border-radius: 7px; overflow: hidden; background: #EEE; }
+  .photo-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .photo-thumb .remove-photo { position: absolute; top: 3px; left: 3px; background: rgba(198,40,40,0.85); color: white; border: none; border-radius: 50%; width: 22px; height: 22px; font-size: 13px; cursor: pointer; display: flex; align-items: center; justify-content: center; line-height: 1; }
+  .add-photo-btn { width: 100%; padding: 10px; background: #F3E5F5; border: 1.5px dashed #CE93D8; border-radius: 7px; color: #6A1B9A; font-size: 13px; font-weight: 600; cursor: pointer; font-family: inherit; margin-top: 6px; display: flex; align-items: center; justify-content: center; gap: 6px; }
+  .photo-input { display: none; }
+  .photo-count { font-size: 11px; color: var(--gray-mid); margin-top: 4px; }
+
+  /* SECTION LABELS */
+  .sub-label { font-size: 11px; font-weight: 700; color: var(--gray-mid); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; margin-top: 2px; }
+  .sub-section { border: 1px solid #EEE; border-radius: 8px; padding: 10px; background: #FAFAFA; }
+
+  /* SUMMARY */
+  .summary-box { margin: 10px 10px 0; background: var(--light-green); border: 1.5px solid #A5D6A7; border-radius: 12px; padding: 13px 15px; display: none; }
+  .summary-title { font-size: 13px; font-weight: 700; color: var(--green); margin-bottom: 8px; }
+  .summary-row { display: flex; justify-content: space-between; font-size: 13px; padding: 3px 0; border-bottom: 1px solid #C8E6C9; }
+  .summary-row:last-child { border-bottom: none; font-weight: 700; }
+  .summary-row .val { color: var(--navy); font-weight: 700; }
+
+  .submit-section { margin: 14px 10px 0; }
+  .submit-btn { width: 100%; padding: 17px; background: var(--green); color: white; border: none; border-radius: 12px; font-size: 18px; font-weight: 800; cursor: pointer; font-family: inherit; box-shadow: 0 4px 12px rgba(46,125,50,0.3); display: flex; align-items: center; justify-content: center; gap: 10px; }
+  .submit-btn:active { transform: scale(0.98); }
+  .submit-btn:disabled { background: #9E9E9E; box-shadow: none; }
+
+  .success-screen { display: none; position: fixed; inset: 0; background: var(--green); color: white; flex-direction: column; align-items: center; justify-content: center; z-index: 999; text-align: center; padding: 40px; }
+  .success-screen.show { display: flex; }
+  .success-icon { font-size: 80px; margin-bottom: 20px; }
+  .success-screen h2 { font-size: 26px; margin-bottom: 10px; }
+  .success-screen p { font-size: 15px; opacity: 0.9; margin-bottom: 30px; line-height: 1.6; }
+  .new-entry-btn { background: white; color: var(--green); border: none; padding: 14px 36px; border-radius: 50px; font-size: 16px; font-weight: 700; cursor: pointer; font-family: inherit; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-top">
+    <div>
+      <h1 id="h-title">📋 יומן עבודה</h1>
+      <div class="company" id="h-company">קרני השחר בע"מ</div>
+    </div>
+    <div class="date-badge">
+      <div class="day" id="today-day">28</div>
+      <div class="month" id="today-month">יוני</div>
+    </div>
+  </div>
+  <div class="lang-bar">
+    <button class="lang-btn active" onclick="setLang(&#39;he&#39;)">עברית</button>
+    <button class="lang-btn" onclick="setLang(&#39;ar&#39;)">العربية</button>
+  </div>
+  <div class="progress-bar"><div class="progress-fill" id="progress" style="width: 53%;"></div></div>
+</div>
+
+<form id="workForm" onsubmit="submitForm(event)">
+
+<!-- 1. פרטי יום -->
+<div class="section">
+  <div class="section-header"><span class="num">1</span> <span id="s1-title">פרטי היום</span></div>
+  <div class="section-body">
+    <div class="grid2">
+      <div class="field">
+        <label><span id="l-date">תאריך העבודה</span> <span class="req">*</span></label>
+        <input type="date" id="work_date" required="" onchange="updateProgress()">
+      <div class="hint" id="h-work-date">📅 תאריך שבו בוצעה העבודה — ברירת מחדל: אתמול</div>
+      </div>
+      <div class="field">
+        <label><span id="l-project">פרויקט</span> <span class="req">*</span></label>
+        <select id="project" required="" onchange="updateProgress(); updateLocations()">
+          <option value="" id="opt-proj-ph">— בחר —</option>
+          <option value="בלינסון">בלינסון</option>
+          <option value="השרון">השרון</option>
+          <option value="גהה">גהה</option>
+          <option value="כרמיאל">כרמיאל</option>
+        </select>
+        <div class="hint" id="h-project">🏥 בחר את בית החולים שבו עבדת היום</div>
+      </div>
+    </div>
+    <div class="field">
+      <label><span id="l-manager">מנהל עבודה</span> <span class="req">*</span></label>
+      <select id="manager_name" required="" onchange="handleManagerChange(this)">
+        <option value="" id="opt-mgr-ph">— בחר מנהל עבודה —</option>
+        <optgroup label="מנהלי עבודה">
+          <option value="מאיר פרץ">מאיר פרץ</option>
+          <option value="יוסף בן שמעון">יוסף בן שמעון</option>
+          <option value="אלי חגג">אלי חגג</option>
+          <option value="דוד גבאי">דוד גבאי</option>
+        </optgroup>
+        <optgroup label="ראשי צוות">
+          <option value="מנסור">מנסור</option>
+          <option value="אבו חליל">אבו חליל</option>
+          <option value="כאמל עדנן">כאמל עדנן</option>
+          <option value="משה דדוש">משה דדוש</option>
+          <option value="רוני ברמי">רוני ברמי</option>
+          <option value="מוחמד אבו טיר">מוחמד אבו טיר</option>
+        </optgroup>
+        <option value="__new_manager__">+ הוסף חדש</option>
+      </select>
+      <input type="text" id="manager_custom" placeholder="שם מנהל / ראש צוות" style="display:none;margin-top:6px">
+      <div class="hint" id="hint-mgr">אם שמך לא מופיע — פנה לדוד | إذا لم يظهر اسمك — تواصل مع داود</div>
+    </div>
+    <div class="grid2">
+      <div class="field">
+        <label id="l-start">שעת התחלה</label>
+        <input type="time" id="start_time" value="07:00">
+        <div class="hint">⏰ שעה שהתחלתם לעבוד באתר</div>
+      </div>
+      <div class="field">
+        <label id="l-end">שעת סיום</label>
+        <input type="time" id="end_time" value="15:00">
+        <div class="hint">⏰ שעה שסיימתם לעבוד באתר</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 2. מיקום -->
+<div class="section">
+  <div class="section-header"><span class="num">2</span> <span id="s2-title">מיקום העבודה</span></div>
+  <div class="section-body">
+    <div class="field">
+      <label><span id="l-area">אזור / קומה</span></label>
+      <div class="location-grid" id="location-grid">
+        <div style="grid-column:1/-1;color:#9E9E9E;font-size:13px;text-align:center;padding:10px" id="loc-ph">בחר פרויקט כדי לראות אזורים</div>
+      </div>
+      <input type="hidden" id="location">
+      <button type="button" id="btn-add-location" onclick="showCustomLocation()" style="margin-top:8px;background:var(--light-blue);border:1.5px dashed #90CAF9;border-radius:7px;color:var(--blue);font-size:13px;font-weight:600;padding:8px 14px;cursor:pointer;font-family:inherit;display:none">+ <span id="lbl-add-location">הוסף מיקום חדש</span></button>
+      <input type="text" id="location_custom" placeholder="מיקום חדש..." style="display:none;margin-top:6px" oninput="updateCustomLocation(this)">
+    </div>
+    <div class="field">
+      <label id="l-locdetail">פירוט נוסף</label>
+      <input type="text" id="location_detail" placeholder="חדר, מחלקה, קומה...">
+      <div class="hint" id="h-locdetail">📍 דייק את המיקום — לדוגמה: חדר 12, מסדרון מזרחי, ליד מעלית</div>
+    </div>
+  </div>
+</div>
+
+<!-- 3. עבודות — כל עבודה = שורה בגיליון -->
+<div class="section">
+  <div class="section-header"><span class="num">3</span> <span id="s3-title">עבודות שבוצעו</span></div>
+  <div class="section-body">
+    <div class="hint" style="margin-bottom:10px" id="tasks-hint">כל עבודה = רמדור נפרד. הוסף עבודה לכל משימה שבוצעה היום.</div>
+    <div class="tasks-container" id="tasks-container"><div class="task-card" id="task-1" data-task-id="1">
+    <div class="task-card-header">
+      <span>עבודה 1</span>
+      
+    </div>
+    <div class="task-card-body">
+      <!-- תיאור + יומן -->
+      <div class="field">
+        <textarea data-role="desc" placeholder="תיאור העבודה *" oninput="checkTaskFilled(1)"></textarea>
+        <div class="hint">✏️ תאר מה בוצע — לדוגמה: החלפת צנרת ניקוז בחדר 12, תיקון נזילה מסדרון קומה 2</div>
+      </div>
+      <div class="grid2">
+        <div class="field">
+          <label>מספר יומן</label>
+          <input type="number" data-role="journal" placeholder="1521">
+          <div class="hint">📓 מספר היומן מהמערכת — אם ידוע. אפשר להשלים מאוחר יותר</div>
+        </div>
+        <div class="field">
+          <label>🔢 מספר רמדור</label>
+          <input type="number" data-role="ramdor" placeholder="למשל: 2516" style="border-color:#7986CB;background:#F0F4FF">
+          <div class="hint">🔢 ימולא לאחר קבלת חשבון עסקה מהמשרד</div>
+        </div>
+      </div>
+      <div class="field">
+        <label>מי הזמין את העבודה</label>
+        <select data-role="mazmin" onchange="handleMazminChange(this, 1)">
+          <option value="">— מי הזמין —</option><option value="אבי">אבי</option><option value="אוריאל">אוריאל</option><option value="איתמר">איתמר</option><option value="ברק">ברק</option><option value="גנדי">גנדי</option><option value="דוד רם">דוד רם</option><option value="יגאל">יגאל</option><option value="יואב ארגוב">יואב ארגוב</option><option value="יעקב">יעקב</option><option value="ציון">ציון</option><option value="מוטי משיח">מוטי משיח</option><option value="נריה">נריה</option><option value="עדי">עדי</option><option value="עופר">עופר</option><option value="פינקו">פינקו</option><option value="קובי">קובי</option><option value="רמי">רמי</option><option value="רמי חלא">רמי חלא</option><option value="רמי מזרחי">רמי מזרחי</option><option value="רוני מכמל">רוני מכמל</option><option value="רוני חתוכה">רוני חתוכה</option><option value="סמי">סמי</option><option value="שלמה סגיס">שלמה סגיס</option><option value="שמואל">שמואל</option><option value="שרון סרבי">שרון סרבי</option><option value="צביקה">צביקה</option><option value="אחר">אחר</option><option value="__new__">+ הוסף חדש</option>
+          <option value="__new__">+ הוסף חדש</option>
+        </select>
+        <input type="text" data-role="mazmin-custom" placeholder="שם המזמין" style="display:none;margin-top:6px">
+      </div>
+
+      <!-- פועלים -->
+      <div class="sub-section">
+        <div class="sub-label" data-role="workers-sub">👷 פועלים בעבודה זו</div>
+        <div class="hint" style="margin-bottom:8px">רשום כל פועל שעבד על המשימה הזו — שם מלא, מקצוע, כמה שעות עבד</div>
+        <div class="workers-in-task" id="workers-1"><div class="worker-row-small" data-role="worker-row" id="wr-1-1">
+    <input type="text" placeholder="שם פועל *">
+    <select><option value="">מקצוע</option><option>אינסטלטור</option><option>שרברב</option><option>פועל כללי</option><option>ריתוך</option><option>חשמלאי</option><option>אחר</option></select>
+    <input type="number" placeholder="שעות" value="8" min="1" max="14">
+    <span></span>
+  </div></div>
+        <button type="button" class="add-worker-small" data-role="add-worker" onclick="addWorker(1)">+ הוסף פועל</button>
+      </div>
+
+      <div class="sub-section">
+        <div class="sub-label" data-role="materials-sub">🧱 חומרים ששימשו</div>
+        <div class="hint" style="margin-bottom:8px">רשום חומרים שנצרכו — צינור, ברז, בידוד וכו׳. כמות ויחידה חשובים לחשבון</div>
+        <div class="materials-container" id="materials-1"></div>
+        <button type="button" class="add-material-btn" data-role="add-mat" onclick="addMaterial(1)">+ הוסף חומר</button>
+      </div>
+
+      <!-- הערות לעבודה -->
+      <div class="field">
+        <label>הערות לעבודה זו</label>
+        <textarea data-role="task-notes" placeholder="לדוגמה: עבודה לא הסתיימה, נמשיך מחר | צריך אישור מהמהנדס | בעיה בצינור קיים" style="min-height:55px"></textarea>
+        <div class="hint">💡 הערות ספציפיות לעבודה זו — לא לשכוח כלום!</div>
+      </div>
+
+      <!-- תמונות -->
+      <div class="photos-sub-section">
+        <div class="sub-label" data-role="photos-sub">📷 תמונות מהעבודה</div>
+        <div class="photos-grid" id="photos-grid-1"></div>
+        <div class="photo-count" id="photo-count-1"></div>
+        <input type="file" class="photo-input" id="photo-input-1" accept="image/*" multiple="" onchange="handlePhotos(1, this)">
+        <button type="button" class="add-photo-btn" data-role="add-photo" onclick="document.getElementById(&#39;photo-input-1&#39;).click()">📷 צרף תמונה</button>
+      </div>
+    </div>
+  </div></div>
+    <button type="button" class="add-task-btn" onclick="addTask()" id="btn-add-task">➕ הוסף עבודה</button>
+  </div>
+</div>
+
+<!-- 4. הערות כלליות -->
+<div class="section">
+  <div class="section-header"><span class="num">4</span> <span id="s4-title">הערות כלליות</span></div>
+  <div class="section-body">
+    <div class="field">
+      <label id="l-notes">הערות, בעיות, המשך מחר</label>
+      <textarea id="notes" placeholder="דוגמה: מחר צריך להמשיך את העבודה בחדר 5 | חסר חומר X | הייתה בעיה עם Y"></textarea>
+      <div class="hint" id="h-notes">💡 כתוב כל מידע חשוב שצריך לדעת — בעיות, המשך מחר, חומרים שחסרים</div>
+    </div>
+    <div class="field">
+      <label id="l-status">סטטוס כללי</label>
+      <select id="work_status">
+        <option value="בביצוע" id="opt-s1">בביצוע — נמשיך מחר</option>
+        <option value="הסתיים" id="opt-s2">הסתיים — יום עבודה הושלם</option>
+        <option value="ממתין" id="opt-s3">ממתין — צריך חומרים / אישור</option>
+      </select>
+    </div>
+  </div>
+</div>
+
+<!-- SUMMARY -->
+<div class="summary-box" id="summary-box" style="display: none;">
+  <div class="summary-title" id="sum-title">📊 סיכום</div>
+  <div class="summary-row"><span id="sl-date">תאריך</span><span class="val" id="sum-date">27/06/2026</span></div>
+  <div class="summary-row"><span id="sl-proj">פרויקט</span><span class="val" id="sum-proj">—</span></div>
+  <div class="summary-row"><span id="sl-mgr">מנהל</span><span class="val" id="sum-mgr">—</span></div>
+  <div class="summary-row"><span id="sl-tasks">עבודות</span><span class="val" id="sum-tasks">1</span></div>
+  <div class="summary-row"><span id="sl-workers">פועלים</span><span class="val" id="sum-workers">0</span></div>
+</div>
+
+<div class="submit-section">
+  <button type="submit" class="submit-btn" id="submit-btn">✅ שלח יומן עבודה</button>
+</div>
+</form>
+
+<div class="success-screen" id="success-screen">
+  <div class="success-icon">✅</div>
+  <h2 id="suc-h">!נשלח בהצלחה</h2>
+  <p id="suc-p"></p>
+  <button class="new-entry-btn" onclick="resetForm()" id="suc-btn">➕ יומן חדש</button>
+</div>
+
+<script>
+const SHEET_URL = 'https://script.google.com/macros/s/AKfycbxSMWVQdPvH1Wdo2CoUBVMZ9l1UjViRMDg_ZMTTnhUSWb8m-9mtOIcZsSuBZe5hm4nGnQ/exec';
+
+const LOCATIONS = {
+  'בלינסון': ['קומה 0','קומה 1','קומה 2','קומה 3','קומה 4','גג','כירורגיה','עיניים','דיאליזה','פתולוגיה','חבטמ','מטבח','גנרטורים','אחר'],
+  'השרון':   ['קומה 0','קומה 1','קומה 2','קומה 3','גג','דיאליזה','מינוס 1','מינוס 2','מינוס 3','אחר'],
+  'גהה':     ['קומה 0','קומה 1','קומה 2','בניין ראשי','גנרטורים','אחר'],
+  'כרמיאל':  ['גזים רפואיים','מים','חדר אנגיו','אחר'],
+};
+
+const MAZMINIM = {
+  'בלינסון': ['עופר','ברק','מוטי משיח','סמי','דוד רם','שרון סרבי','צביקה','נריה','רוני מכמל','רוני חתוכה','גנדי','שלמה סגיס','יואב ארגוב','פינקו','איתמר','אחר'],
+  'השרון':   ['אבי','אוריאל','רמי','קובי','רמי חלא','רמי מזרחי','יגאל','איתמר','יעקב','ציון','אחר'],
+  'גהה':     ['רמי','עדי','אחר'],
+  'כרמיאל':  ['שמואל','אחר'],
+};
+
+const ALL_MAZMINIM = ['אבי','אוריאל','איתמר','ברק','גנדי','דוד רם','יגאל','יואב ארגוב','יעקב','ציון','מוטי משיח','נריה','עדי','עופר','פינקו','קובי','רמי','רמי חלא','רמי מזרחי','רוני מכמל','רוני חתוכה','סמי','שלמה סגיס','שמואל','שרון סרבי','צביקה','אחר'];
+
+const T = {
+  he: {
+    title:'📋 יומן עבודה', company:'קרני השחר בע"מ',
+    s1:'פרטי היום', s2:'מיקום העבודה', s3:'עבודות שבוצעו', s4:'הערות כלליות',
+    lDate:'תאריך העבודה', lProj:'פרויקט', lMgr:'מנהל עבודה',
+    lStart:'שעת התחלה', lEnd:'שעת סיום',
+    lArea:'אזור / קומה', lLocDetail:'פירוט נוסף',
+    lNotes:'הערות, בעיות, המשך מחר', lStatus:'סטטוס כללי',
+    hintMgr:'אם שמך לא מופיע — פנה לדוד | إذا لم يظهر اسمك — تواصل مع داود',
+    locPh:'בחר פרויקט כדי לראות אזורים',
+    tasksHint:'כל עבודה = רמדור נפרד. הוסף עבודה לכל משימה שבוצעה היום.',
+    btnAddTask:'➕ הוסף עבודה', btnSubmit:'✅ שלח יומן עבודה',
+    taskLabel:'עבודה', taskDesc:'תיאור העבודה *', taskJournal:'מספר יומן',
+    taskMazmin:'מי הזמין את העבודה', taskNotes:'הערות לעבודה זו',
+    photosSub:'תמונות מהעבודה', btnAddPhoto:'📷 צרף תמונה', photoCount:'תמונה',
+    workersSub:'פועלים בעבודה זו', workerName:'שם פועל *', workerTrade:'מקצוע', workerHours:'שעות',
+    materialsSub:'חומרים ששימשו', matName:'שם חומר *', matQty:'כמות', matUnit:'יחידה',
+    btnAddWorker:'+ הוסף פועל', btnAddMat:'+ הוסף חומר',
+    trades:['אינסטלטור','שרברב','פועל כללי','ריתוך','חשמלאי','אחר'],
+    units:['מ"ר','מ"א','יחידה','ק"ג','ליטר','מטר','אחר'],
+    statusOpts:['בביצוע — נמשיך מחר','הסתיים — יום עבודה הושלם','ממתין — צריך חומרים / אישור'],
+    sumTitle:'📊 סיכום', slDate:'תאריך', slProj:'פרויקט', slMgr:'מנהל', slTasks:'עבודות', slWorkers:'פועלים',
+    sucH:'!נשלח בהצלחה', sucBtn:'➕ יומן חדש',
+    months:['ינואר','פברואר','מרץ','אפריל','מאי','יוני','יולי','אוגוסט','ספטמבר','אוקטובר','נובמבר','דצמבר'],
+    phMgr:'— בחר מנהל עבודה —', phProj:'— בחר —', tradeOpt:'מקצוע', unitOpt:'יחידה', mazminOpt:'— מי הזמין —',
+    dir:'rtl'
+  },
+  ar: {
+    title:'📋 سجل العمل', company:'شركة كرني هشاحر',
+    s1:'تفاصيل اليوم', s2:'موقع العمل', s3:'الأعمال المنجزة', s4:'ملاحظات عامة',
+    lDate:'تاريخ العمل', lProj:'المشروع', lMgr:'مشرف العمل',
+    lStart:'وقت البدء', lEnd:'وقت الانتهاء',
+    lArea:'المنطقة / الطابق', lLocDetail:'تفاصيل إضافية',
+    lNotes:'ملاحظات، مشاكل، عمل لغد', lStatus:'الحالة العامة',
+    hintMgr:'إذا لم يظهر اسمك — تواصل مع داود',
+    locPh:'اختر المشروع لرؤية المناطق',
+    tasksHint:'كل عمل = رمدور منفصل. أضف عملاً لكل مهمة أُنجزت اليوم.',
+    btnAddTask:'➕ أضف عملاً', btnSubmit:'✅ أرسل سجل العمل',
+    taskLabel:'عمل', taskDesc:'وصف العمل *', taskJournal:'رقم السجل',
+    taskMazmin:'من طلب العمل', taskNotes:'ملاحظات لهذا العمل',
+    photosSub:'صور من العمل', btnAddPhoto:'📷 أضف صورة', photoCount:'صورة',
+    workersSub:'العمال في هذا العمل', workerName:'اسم العامل *', workerTrade:'المهنة', workerHours:'ساعات',
+    materialsSub:'المواد المستخدمة', matName:'اسم المادة *', matQty:'الكمية', matUnit:'الوحدة',
+    btnAddWorker:'+ أضف عاملاً', btnAddMat:'+ أضف مادة',
+    trades:['سباك','عامل عام','لحام','كهربائي','آخر'],
+    units:['م²','م.ط','وحدة','كغ','لتر','متر','آخر'],
+    statusOpts:['جارٍ — سنكمل غداً','منتهٍ — اكتمل العمل','انتظار — نحتاج مواد / موافقة'],
+    sumTitle:'📊 ملخص', slDate:'التاريخ', slProj:'المشروع', slMgr:'المشرف', slTasks:'الأعمال', slWorkers:'العمال',
+    sucH:'!تم الإرسال بنجاح', sucBtn:'➕ سجل جديد',
+    months:['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'],
+    phMgr:'— اختر مشرف العمل —', phProj:'— اختر —', tradeOpt:'المهنة', unitOpt:'الوحدة', mazminOpt:'— من طلب —',
+    dir:'rtl'
+  }
+};
+
+let lang = 'he';
+let taskCount = 0;
+let selectedLocation = '';
+let taskPhotos = {}; // taskId → [{name, base64, size}]
+
+function handleManagerChange(sel) {
+  const customInput = document.getElementById('manager_custom');
+  if (sel.value === '__new_manager__') {
+    customInput.style.display = 'block';
+    customInput.focus();
+    customInput.onblur = () => {
+      const name = customInput.value.trim();
+      if (name) {
+        // הוסף לרשימה
+        const optgroup = sel.querySelector('optgroup[label="ראשי צוות"]');
+        const newOpt = document.createElement('option');
+        newOpt.value = name;
+        newOpt.textContent = name;
+        optgroup.insertBefore(newOpt, sel.querySelector('option[value="__new_manager__"]'));
+        sel.value = name;
+      } else {
+        sel.value = '';
+      }
+      customInput.style.display = 'none';
+      updateProgress();
+    };
+  } else {
+    customInput.style.display = 'none';
+    updateProgress();
+  }
+}
+
+// ── מזמין חדש ───────────────────────────────────────
+function handleMazminChange(sel, taskId) {
+  const card = document.getElementById('task-'+taskId);
+  if (!card) return;
+  const customInput = card.querySelector('[data-role="mazmin-custom"]');
+  if (sel.value === '__new__') {
+    customInput.style.display = 'block';
+    customInput.focus();
+    customInput.onblur = () => {
+      const name = customInput.value.trim();
+      if (name && !ALL_MAZMINIM.includes(name)) {
+        ALL_MAZMINIM.splice(ALL_MAZMINIM.length - 1, 0, name);
+        document.querySelectorAll('[data-role="mazmin"]').forEach(s => {
+          const v = s.value;
+          s.innerHTML = `<option value="">${T[lang].mazminOpt}</option>` +
+            ALL_MAZMINIM.map(m=>`<option value="${m}">${m}</option>`).join('') +
+            `<option value="__new__">+ ${lang==='he'?'הוסף חדש':'أضف جديد'}</option>`;
+          s.value = v;
+        });
+      }
+      if (name) sel.value = name;
+      customInput.style.display = 'none';
+    };
+  } else {
+    customInput.style.display = 'none';
+  }
+}
+
+// ── תמונות ──────────────────────────────────────────
+function handlePhotos(taskId, input) {
+  if (!taskPhotos[taskId]) taskPhotos[taskId] = [];
+  const files = Array.from(input.files);
+  const grid = document.getElementById('photos-grid-'+taskId);
+  const countEl = document.getElementById('photo-count-'+taskId);
+  const t = T[lang];
+  let processed = 0;
+  files.forEach(file => {
+    if (!file.type.startsWith('image/')) return;
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const base64 = e.target.result;
+      const photoId = Date.now() + '_' + Math.random().toString(36).slice(2,6);
+      taskPhotos[taskId].push({ id: photoId, name: file.name, base64, size: file.size });
+      // תמונה ממוזערת
+      const thumb = document.createElement('div');
+      thumb.className = 'photo-thumb';
+      thumb.id = 'photo-'+photoId;
+      thumb.innerHTML = `
+        <img src="${base64}" alt="${file.name}">
+        <button type="button" class="remove-photo" onclick="removePhoto('${taskId}','${photoId}')">✕</button>
+      `;
+      grid.appendChild(thumb);
+      processed++;
+      const total = taskPhotos[taskId].length;
+      countEl.textContent = total > 0 ? `${total} ${t.photoCount}${lang==='he' && total>1?'ות':''}` : '';
+    };
+    reader.readAsDataURL(file);
+  });
+  input.value = ''; // אפשר לבחור שוב
+}
+
+function removePhoto(taskId, photoId) {
+  taskPhotos[taskId] = (taskPhotos[taskId]||[]).filter(p => p.id !== photoId);
+  const el = document.getElementById('photo-'+photoId);
+  if (el) el.remove();
+  const total = taskPhotos[taskId].length;
+  const countEl = document.getElementById('photo-count-'+taskId);
+  if (countEl) countEl.textContent = total > 0 ? `${total} ${T[lang].photoCount}${lang==='he'&&total>1?'ות':''}` : '';
+}
+
+// ── שפה ──────────────────────────────────────────────
+function setLang(l) {
+  lang = l;
+  const t = T[l];
+  document.getElementById('h-title').textContent = t.title;
+  document.getElementById('h-company').textContent = t.company;
+  document.getElementById('s1-title').textContent = t.s1;
+  document.getElementById('s2-title').textContent = t.s2;
+  document.getElementById('s3-title').textContent = t.s3;
+  document.getElementById('s4-title').textContent = t.s4;
+  document.getElementById('l-date').textContent = t.lDate;
+  document.getElementById('l-project').textContent = t.lProj;
+  document.getElementById('l-manager').textContent = t.lMgr;
+  document.getElementById('l-start').textContent = t.lStart;
+  document.getElementById('l-end').textContent = t.lEnd;
+  document.getElementById('l-area').textContent = t.lArea;
+  document.getElementById('l-locdetail').textContent = t.lLocDetail;
+  document.getElementById('l-notes').textContent = t.lNotes;
+  document.getElementById('l-status').textContent = t.lStatus;
+  document.getElementById('hint-mgr').textContent = t.hintMgr;
+  document.getElementById('tasks-hint').textContent = t.tasksHint;
+  document.getElementById('btn-add-task').textContent = t.btnAddTask;
+  document.getElementById('submit-btn').textContent = t.btnSubmit;
+  document.getElementById('opt-mgr-ph').textContent = t.phMgr;
+  document.getElementById('opt-proj-ph').textContent = t.phProj;
+  document.getElementById('sum-title').textContent = t.sumTitle;
+  document.getElementById('sl-date').textContent = t.slDate;
+  document.getElementById('sl-proj').textContent = t.slProj;
+  document.getElementById('sl-mgr').textContent = t.slMgr;
+  document.getElementById('sl-tasks').textContent = t.slTasks;
+  document.getElementById('sl-workers').textContent = t.slWorkers;
+  document.getElementById('suc-h').textContent = t.sucH;
+  document.getElementById('suc-btn').textContent = t.sucBtn;
+  const so = document.getElementById('work_status').options;
+  t.statusOpts.forEach((s,i) => { if(so[i]) so[i].textContent = s; });
+  document.querySelectorAll('.lang-btn').forEach((b,i) => b.classList.toggle('active', i===(l==='he'?0:1)));
+  const locph = document.getElementById('loc-ph');
+  if (locph) locph.textContent = t.locPh;
+  updateLocations();
+  // עדכן כרטיסי עבודה קיימים
+  document.querySelectorAll('.task-card').forEach(card => {
+    const id = card.dataset.taskId;
+    updateTaskLang(id, t);
+  });
+}
+
+function updateTaskLang(id, t) {
+  const card = document.getElementById('task-'+id);
+  if (!card) return;
+  const setPlaceholder = (sel, val) => { const el = card.querySelector(sel); if(el) el.placeholder = val; };
+  const setText = (sel, val) => { const el = card.querySelector(sel); if(el) el.textContent = val; };
+  setPlaceholder('[data-role="desc"]', t.taskDesc);
+  setPlaceholder('[data-role="journal"]', t.taskJournal);
+  setPlaceholder('[data-role="task-notes"]', t.taskNotes);
+  setText('[data-role="photos-sub"]', '📷 ' + t.photosSub);
+  setText('[data-role="add-photo"]', t.btnAddPhoto);
+  setText('[data-role="materials-sub"]', '🧱 ' + t.materialsSub);
+  setText('[data-role="add-worker"]', t.btnAddWorker);
+  setText('[data-role="add-mat"]', t.btnAddMat);
+  const mazSel = card.querySelector('[data-role="mazmin"]');
+  if (mazSel) mazSel.options[0].textContent = t.mazminOpt;
+  card.querySelectorAll('[data-role="worker-row"]').forEach(row => {
+    const inp = row.querySelector('input[type="text"]'); if(inp) inp.placeholder = t.workerName;
+    const hrs = row.querySelector('input[type="number"]'); if(hrs) hrs.placeholder = t.workerHours;
+    const sel = row.querySelector('select'); if(sel) { const v=sel.value; sel.innerHTML=`<option value="">${t.tradeOpt}</option>`+t.trades.map(tr=>`<option>${tr}</option>`).join(''); sel.value=v; }
+  });
+  card.querySelectorAll('[data-role="mat-row"]').forEach(row => {
+    const nm = row.querySelector('[data-role="mat-name"]'); if(nm) nm.placeholder = t.matName;
+    const qt = row.querySelector('[data-role="mat-qty"]'); if(qt) qt.placeholder = t.matQty;
+    const us = row.querySelector('[data-role="mat-unit"]'); if(us) { const v=us.value; us.innerHTML=`<option value="">${t.unitOpt}</option>`+t.units.map(u=>`<option>${u}</option>`).join(''); us.value=v; }
+  });
+}
+
+// ── תאריך ───────────────────────────────────────────
+function initDate() {
+  const now = new Date();
+  document.getElementById('today-day').textContent = now.getDate();
+  document.getElementById('today-month').textContent = T[lang].months[now.getMonth()];
+  const yesterday = new Date(now);
+  yesterday.setDate(yesterday.getDate()-1);
+  document.getElementById('work_date').value = yesterday.toISOString().split('T')[0];
+}
+
+// ── מיקומים ─────────────────────────────────────────
+function showCustomLocation() {
+  const inp = document.getElementById('location_custom');
+  inp.style.display = 'block';
+  inp.focus();
+}
+
+function updateCustomLocation(inp) {
+  const name = inp.value.trim();
+  if (name) {
+    selectedLocation = name;
+    document.getElementById('location').value = name;
+    // בטל בחירה קודמת בגריד
+    document.querySelectorAll('.location-btn').forEach(b => b.classList.remove('selected'));
+    updateProgress();
+  }
+}
+
+function updateLocations() {
+  const proj = document.getElementById('project').value;
+  const grid = document.getElementById('location-grid');
+  selectedLocation = '';
+  document.getElementById('location').value = '';
+  const t = T[lang];
+  if (!proj || !LOCATIONS[proj]) {
+    grid.innerHTML = `<div id="loc-ph" style="grid-column:1/-1;color:#9E9E9E;font-size:13px;text-align:center;padding:10px">${t.locPh}</div>`;
+    return;
+  }
+  grid.innerHTML = LOCATIONS[proj].map(loc =>
+    `<button type="button" class="location-btn" onclick="selectLocation('${loc}',this)">${loc}</button>`
+  ).join('');
+  document.getElementById('btn-add-location').style.display = 'inline-flex';
+  document.getElementById('location_custom').style.display = 'none';
+  document.getElementById('location_custom').value = '';
+  // עדכן מזמינים בכל הכרטיסים
+  document.querySelectorAll('[data-role="mazmin"]').forEach(sel => {
+    const v = sel.value;
+    sel.innerHTML = `<option value="">${T[lang].mazminOpt}</option>` + ALL_MAZMINIM.map(m=>`<option value="${m}">${m}</option>`).join('') + `<option value="__new__">+ ${lang==='he'?'הוסף חדש':'أضف جديد'}</option>`;
+    sel.value = v;
+  });
+}
+
+function selectLocation(loc, btn) {
+  document.querySelectorAll('.location-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  selectedLocation = loc;
+  document.getElementById('location').value = loc;
+  document.getElementById('location_custom').value = '';
+  document.getElementById('location_custom').style.display = 'none';
+  updateProgress();
+}
+
+// ── כרטיס עבודה ─────────────────────────────────────
+function addTask() {
+  taskCount++;
+  const id = taskCount;
+  const t = T[lang];
+  const proj = document.getElementById('project').value;
+  const mazminim = ALL_MAZMINIM;
+  const mazOpts = `<option value="">${t.mazminOpt}</option>` + ALL_MAZMINIM.map(m=>`<option value="${m}">${m}</option>`).join('') + `<option value="__new__">+ ${lang==='he'?'הוסף חדש':'أضف جديد'}</option>`;
+  const div = document.createElement('div');
+  div.className = 'task-card';
+  div.id = 'task-'+id;
+  div.dataset.taskId = id;
+  div.innerHTML = `
+    <div class="task-card-header">
+      <span>${t.taskLabel} ${id}</span>
+      ${id > 1 ? `<button type="button" class="remove-task" onclick="removeTask(${id})">✕</button>` : ''}
+    </div>
+    <div class="task-card-body">
+      <!-- תיאור + יומן -->
+      <div class="field">
+        <textarea data-role="desc" placeholder="${t.taskDesc}" oninput="checkTaskFilled(${id})"></textarea>
+        <div class="hint">${lang==='he'?'✏️ תאר מה בוצע — לדוגמה: החלפת צנרת ניקוז בחדר 12, תיקון נזילה מסדרון קומה 2':'✏️ صف ما تم — مثال: تغيير أنابيب الصرف في غرفة 12'}</div>
+      </div>
+      <div class="grid2">
+        <div class="field">
+          <label>${t.taskJournal}</label>
+          <input type="number" data-role="journal" placeholder="1521">
+          <div class="hint">${lang==='he'?'📓 מספר היומן מהמערכת — אם ידוע. אפשר להשלים מאוחר יותר':'📓 رقم السجل من النظام — إن وُجد'}</div>
+        </div>
+        <div class="field">
+          <label>${lang==='he'?'🔢 מספר רמדור':'🔢 رقم الرمدور'}</label>
+          <input type="number" data-role="ramdor" placeholder="${lang==='he'?'למשל: 2516':'مثال: 2516'}" style="border-color:#7986CB;background:#F0F4FF">
+          <div class="hint">${lang==='he'?'🔢 ימולא לאחר קבלת חשבון עסקה מהמשרד':'🔢 يُملأ بعد استلام حساب العمل من المكتب'}</div>
+        </div>
+      </div>
+      <div class="field">
+        <label>${t.taskMazmin}</label>
+        <select data-role="mazmin" onchange="handleMazminChange(this, ${id})">
+          ${mazOpts}
+          <option value="__new__">+ ${lang==='he'?'הוסף חדש':'أضف جديد'}</option>
+        </select>
+        <input type="text" data-role="mazmin-custom" placeholder="${lang==='he'?'שם המזמין':'اسم الطالب'}" style="display:none;margin-top:6px">
+      </div>
+
+      <!-- פועלים -->
+      <div class="sub-section">
+        <div class="sub-label" data-role="workers-sub">👷 ${t.workersSub}</div>
+        <div class="hint" style="margin-bottom:8px">${lang==='he'?'רשום כל פועל שעבד על המשימה הזו — שם מלא, מקצוע, כמה שעות עבד':'سجّل كل عامل عمل في هذه المهمة — الاسم الكامل، المهنة، عدد الساعات'}</div>
+        <div class="workers-in-task" id="workers-${id}"></div>
+        <button type="button" class="add-worker-small" data-role="add-worker" onclick="addWorker(${id})">${t.btnAddWorker}</button>
+      </div>
+
+      <div class="sub-section">
+        <div class="sub-label" data-role="materials-sub">🧱 ${t.materialsSub}</div>
+        <div class="hint" style="margin-bottom:8px">${lang==='he'?'רשום חומרים שנצרכו — צינור, ברז, בידוד וכו׳. כמות ויחידה חשובים לחשבון':'سجّل المواد المستخدمة — أنبوب، صنبور، عازل وغيره. الكمية والوحدة مهمة للفاتورة'}</div>
+        <div class="materials-container" id="materials-${id}"></div>
+        <button type="button" class="add-material-btn" data-role="add-mat" onclick="addMaterial(${id})">${t.btnAddMat}</button>
+      </div>
+
+      <!-- הערות לעבודה -->
+      <div class="field">
+        <label>${t.taskNotes}</label>
+        <textarea data-role="task-notes" placeholder="${lang==='he'?'לדוגמה: עבודה לא הסתיימה, נמשיך מחר | צריך אישור מהמהנדס | בעיה בצינור קיים':'مثال: العمل لم ينته، سنكمل غداً | نحتاج موافقة المهندس'}" style="min-height:55px"></textarea>
+        <div class="hint">${lang==='he'?'💡 הערות ספציפיות לעבודה זו — לא לשכוח כלום!':'💡 ملاحظات خاصة بهذا العمل — لا تنسَ شيئاً!'}</div>
+      </div>
+
+      <!-- תמונות -->
+      <div class="photos-sub-section">
+        <div class="sub-label" data-role="photos-sub">📷 ${t.photosSub}</div>
+        <div class="photos-grid" id="photos-grid-${id}"></div>
+        <div class="photo-count" id="photo-count-${id}"></div>
+        <input type="file" class="photo-input" id="photo-input-${id}" accept="image/*" multiple onchange="handlePhotos(${id}, this)">
+        <button type="button" class="add-photo-btn" data-role="add-photo" onclick="document.getElementById('photo-input-${id}').click()">${t.btnAddPhoto}</button>
+      </div>
+    </div>
+  `;
+  document.getElementById('tasks-container').appendChild(div);
+  addWorker(id); // פועל ראשון אוטומטי
+  updateProgress();
+}
+
+function removeTask(id) {
+  const el = document.getElementById('task-'+id);
+  if (el) { el.remove(); updateProgress(); }
+}
+
+function checkTaskFilled(id) {
+  const card = document.getElementById('task-'+id);
+  if (!card) return;
+  const desc = card.querySelector('[data-role="desc"]').value.trim();
+  card.classList.toggle('filled', !!desc);
+}
+
+// ── פועלים בכרטיס ───────────────────────────────────
+let workerCounts = {};
+function addWorker(taskId) {
+  workerCounts[taskId] = (workerCounts[taskId]||0) + 1;
+  const wNum = workerCounts[taskId];
+  const t = T[lang];
+  const container = document.getElementById('workers-'+taskId);
+  const div = document.createElement('div');
+  div.className = 'worker-row-small';
+  div.dataset.role = 'worker-row';
+  div.id = `wr-${taskId}-${wNum}`;
+  div.innerHTML = `
+    <input type="text" placeholder="${t.workerName}">
+    <select><option value="">${t.tradeOpt}</option>${t.trades.map(tr=>`<option>${tr}</option>`).join('')}</select>
+    <input type="number" placeholder="${t.workerHours}" value="8" min="1" max="14">
+    ${wNum > 1 ? `<button type="button" class="remove-worker-small" onclick="this.parentElement.remove()">✕</button>` : '<span></span>'}
+  `;
+  container.appendChild(div);
+}
+
+// ── חומרים ───────────────────────────────────────────
+let matCounts = {};
+function addMaterial(taskId) {
+  matCounts[taskId] = (matCounts[taskId]||0) + 1;
+  const mNum = matCounts[taskId];
+  const t = T[lang];
+  const container = document.getElementById('materials-'+taskId);
+  const div = document.createElement('div');
+  div.className = 'material-row';
+  div.dataset.role = 'mat-row';
+  div.innerHTML = `
+    <input type="text" data-role="mat-name" placeholder="${t.matName}">
+    <input type="number" data-role="mat-qty" placeholder="${t.matQty}" min="0" step="0.1">
+    <select data-role="mat-unit"><option value="">${t.unitOpt}</option>${t.units.map(u=>`<option>${u}</option>`).join('')}</select>
+    <button type="button" class="remove-material" onclick="this.parentElement.remove()">✕</button>
+  `;
+  container.appendChild(div);
+}
+
+// ── פרוגרס ──────────────────────────────────────────
+function updateProgress() {
+  const f = [
+    document.getElementById('work_date').value,
+    document.getElementById('manager_name').value,
+    document.getElementById('project').value,
+  ];
+  const filled = f.filter(v=>v&&v.trim()).length;
+  const tasks = document.querySelectorAll('.task-card').length;
+  const pct = Math.round((filled/3)*70 + (tasks>0?30:0));
+  document.getElementById('progress').style.width = pct+'%';
+  updateSummary();
+  document.getElementById('summary-box').style.display = filled>=2 ? 'block' : 'none';
+}
+
+function updateSummary() {
+  document.getElementById('sum-date').textContent = document.getElementById('work_date').value ? formatDate(document.getElementById('work_date').value) : '—';
+  document.getElementById('sum-proj').textContent = document.getElementById('project').value || '—';
+  document.getElementById('sum-mgr').textContent = document.getElementById('manager_name').value || '—';
+  const tasks = document.querySelectorAll('.task-card').length;
+  document.getElementById('sum-tasks').textContent = tasks;
+  let totalW = 0;
+  document.querySelectorAll('[data-role="worker-row"] input[type="text"]').forEach(inp => { if(inp.value.trim()) totalW++; });
+  document.getElementById('sum-workers').textContent = totalW;
+}
+
+function formatDate(d) { const [y,m,day]=d.split('-'); return `${day}/${m}/${y}`; }
+
+// ── שליחה ───────────────────────────────────────────
+function submitForm(e) {
+  e.preventDefault();
+  const tasks = [];
+  document.querySelectorAll('.task-card').forEach(card => {
+    const taskId = card.dataset.taskId;
+    // פועלים
+    const workers = [];
+    card.querySelectorAll('[data-role="worker-row"]').forEach(row => {
+      const name = row.querySelector('input[type="text"]').value.trim();
+      const trade = row.querySelector('select').value;
+      const hours = row.querySelector('input[type="number"]').value;
+      if (name) workers.push({name, trade, hours});
+    });
+    // חומרים
+    const materials = [];
+    card.querySelectorAll('[data-role="mat-row"]').forEach(row => {
+      const name = row.querySelector('[data-role="mat-name"]').value.trim();
+      const qty = row.querySelector('[data-role="mat-qty"]').value;
+      const unit = row.querySelector('[data-role="mat-unit"]').value;
+      if (name) materials.push({name, qty, unit});
+    });
+    tasks.push({
+      task_num: taskId,
+      description: card.querySelector('[data-role="desc"]').value,
+      journal_number: card.querySelector('[data-role="journal"]').value,
+      ramdor: card.querySelector('[data-role="ramdor"]') ? card.querySelector('[data-role="ramdor"]').value : '',
+      mazmin: card.querySelector('[data-role="mazmin"]').value,
+      task_notes: card.querySelector('[data-role="task-notes"]').value,
+      workers, materials,
+      photos: taskPhotos[taskId] || [],
+      photos_count: (taskPhotos[taskId]||[]).length,
+    });
+  });
+
+  const baseData = {
+    timestamp: new Date().toISOString(),
+    work_date: document.getElementById('work_date').value,
+    manager: document.getElementById('manager_custom').value.trim() || document.getElementById('manager_name').value,
+    project: document.getElementById('project').value,
+    location: selectedLocation,
+    location_detail: document.getElementById('location_detail').value,
+    start_time: document.getElementById('start_time').value,
+    end_time: document.getElementById('end_time').value,
+    notes: document.getElementById('notes').value,
+    work_status: document.getElementById('work_status').value,
+    form_lang: lang,
+  };
+
+  // שלח שורה נפרדת לכל עבודה
+  const rows = tasks.map(task => ({
+    ...baseData,
+    task_num: task.task_num,
+    description: task.description,
+    journal_number: task.journal_number,
+    ramdor: task.ramdor || '',
+    mazmin: task.mazmin,
+    task_notes: task.task_notes,
+    workers_count: task.workers.length,
+    workers_names: task.workers.map(w=>w.name).join(', '),
+    workers_trades: task.workers.map(w=>w.trade).join(', '),
+    workers_hours: task.workers.map(w=>w.hours).join(', '),
+    materials: task.materials.map(m=>`${m.name} ${m.qty} ${m.unit}`).join(' | '),
+    photos_count: task.photos_count,
+    photos_names: task.photos.map(p=>p.name).join(', '),
+    // תמונות base64 — נשלחות רק אם יש URL לסקריפט
+    photos_data: SHEET_URL ? task.photos.map(p=>p.base64) : [],
+  }));
+
+  const btn = document.getElementById('submit-btn');
+  btn.disabled = true;
+  btn.textContent = lang==='he' ? '⏳ שולח...' : '⏳ جارٍ الإرسال...';
+
+  if (SHEET_URL) {
+    const promises = rows.map(row =>
+      fetch(SHEET_URL, { method:'POST', mode:'no-cors', headers:{'Content-Type':'application/json'}, body:JSON.stringify(row) })
+    );
+    Promise.all(promises).then(() => showSuccess(baseData, tasks.length)).catch(() => showSuccess(baseData, tasks.length));
+  } else {
+    console.log('שורות לגיליון:', rows);
+    setTimeout(() => showSuccess(baseData, tasks.length), 800);
+  }
+}
+
+function showSuccess(data, taskCount) {
+  document.getElementById('suc-p').innerHTML = lang==='he'
+    ? `${formatDate(data.work_date)} | ${data.project}<br>${taskCount} עבודות נשמרו לגיליון`
+    : `${formatDate(data.work_date)} | ${data.project}<br>تم حفظ ${taskCount} أعمال`;
+  document.getElementById('success-screen').classList.add('show');
+}
+
+function resetForm() {
+  document.getElementById('workForm').reset();
+  document.getElementById('tasks-container').innerHTML = '';
+  taskCount = 0; workerCounts = {}; matCounts = {}; taskPhotos = {};
+  selectedLocation = '';
+  document.getElementById('location').value = '';
+  document.getElementById('location-grid').innerHTML = `<div id="loc-ph" style="grid-column:1/-1;color:#9E9E9E;font-size:13px;text-align:center;padding:10px">${T[lang].locPh}</div>`;
+  document.getElementById('success-screen').classList.remove('show');
+  document.getElementById('summary-box').style.display = 'none';
+  document.getElementById('progress').style.width = '0%';
+  document.getElementById('submit-btn').disabled = false;
+  document.getElementById('submit-btn').textContent = T[lang].btnSubmit;
+  initDate();
+  addTask();
+}
+
+initDate();
+addTask();
+</script>
+
+
+</body></html>
