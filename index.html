@@ -806,7 +806,7 @@ function updateFloors(building) {
   }
   grid.innerHTML = floors.map(f =>
     `<button type="button" class="location-btn" onclick="selectLocation('${f}',this)">${f}</button>`
-  ).join('') + '<button type="button" class="location-btn" onclick="selectLocation('אחר',this)">אחר</button>';
+  ).join('') + `<button type="button" class="location-btn" onclick="selectLocation('אחר',this)">אחר</button>`;
 }
 
 function showCustomBuilding() {
@@ -1131,15 +1131,9 @@ function resetForm() {
 }
 
 initDate();
+initAttendance();
 addTask();
-// טען הגדרות מגיליון
 loadSettingsFromSheet();
-// נוכחות — לאחר טעינת DOM
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', initAttendance);
-} else {
-  initAttendance();
-}
 </script>
 </body>
 </html>
