@@ -1,16 +1,10 @@
-<!DOCTYPE html>
-<!-- saved from url=(0119)file:///C:/Users/user/Downloads/%D7%99%D7%95%D7%9E%D7%9F_%D7%A2%D7%91%D7%95%D7%93%D7%94_%D7%98%D7%95%D7%A4%D7%A1_4.html -->
-<html lang="he" dir="rtl"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>יומן עבודה — קרני השחר | سجل العمل</title>
-<link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#1A237E">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="יומן עבודה">
-<link rel="apple-touch-icon" href="icon.svg">
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   :root {
@@ -56,16 +50,6 @@
   .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
   .divider { height: 1px; background: #EEE; margin: 12px 0; }
 
-  /* ATTENDANCE */
-  .attend-row { display:flex; align-items:center; gap:10px; padding:10px 12px; border:2px solid var(--border); border-radius:10px; background:white; transition:all 0.15s; cursor:pointer; }
-  .attend-row.present { border-color:#66BB6A; background:#F1F8E9; }
-  .attend-row.absent  { border-color:#EF9A9A; background:#FFF5F5; opacity:0.6; }
-  .attend-check { width:26px; height:26px; border-radius:50%; border:2px solid var(--border); display:flex; align-items:center; justify-content:center; font-size:15px; flex-shrink:0; transition:all 0.15s; }
-  .attend-row.present .attend-check { background:#2E7D32; border-color:#2E7D32; color:white; }
-  .attend-name { flex:1; font-size:15px; font-weight:600; }
-  .attend-time { width:88px; padding:6px 8px; border:1.5px solid var(--border); border-radius:7px; font-size:14px; font-family:inherit; background:white; display:none; }
-  .attend-row.present .attend-time { display:block; }
-
   /* LOCATION */
   .location-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; }
   .location-btn { padding: 11px 6px; border: 2px solid var(--border); border-radius: 8px; background: white; font-size: 12px; font-weight: 600; color: var(--gray-dark); cursor: pointer; text-align: center; font-family: inherit; transition: all 0.15s; }
@@ -107,6 +91,19 @@
   .remove-material { background: none; border: none; color: var(--red); font-size: 16px; cursor: pointer; padding: 4px; }
   .add-material-btn { background: var(--light-orange); border: 1.5px dashed #FFCC80; border-radius: 7px; color: var(--orange); font-size: 13px; font-weight: 600; padding: 8px; cursor: pointer; width: 100%; font-family: inherit; margin-top: 2px; }
 
+  /* ATTENDANCE */
+  .attendance-grid { display: flex; flex-direction: column; gap: 6px; }
+  .attendance-row { display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; border: 1.5px solid var(--border); border-radius: 8px; background: white; }
+  .attendance-row.present { border-color: #81C784; background: var(--light-green); }
+  .attendance-row.absent { border-color: #EF9A9A; background: #FFEBEE; opacity: 0.6; }
+  .attendance-name { font-size: 14px; font-weight: 600; color: var(--gray-dark); }
+  .attendance-role { font-size: 11px; color: var(--gray-mid); margin-top: 1px; }
+  .attendance-toggle { display: flex; gap: 6px; }
+  .att-btn { padding: 6px 12px; border-radius: 20px; border: 1.5px solid var(--border); font-size: 12px; font-weight: 600; cursor: pointer; font-family: inherit; background: white; }
+  .att-btn.yes { background: #2E7D32; color: white; border-color: #2E7D32; }
+  .att-btn.no  { background: #C62828; color: white; border-color: #C62828; }
+  .add-worker-from-list { background: var(--light-green); border: 1.5px dashed #81C784; border-radius: 7px; color: var(--green); font-size: 13px; font-weight: 600; padding: 8px; cursor: pointer; width: 100%; font-family: inherit; margin-top: 4px; }
+
   .add-task-btn { width: 100%; padding: 13px; background: var(--light-blue); border: 2px dashed #90CAF9; border-radius: 10px; color: var(--blue); font-size: 15px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 10px; font-family: inherit; }
 
   /* PHOTOS */
@@ -118,15 +115,6 @@
   .add-photo-btn { width: 100%; padding: 10px; background: #F3E5F5; border: 1.5px dashed #CE93D8; border-radius: 7px; color: #6A1B9A; font-size: 13px; font-weight: 600; cursor: pointer; font-family: inherit; margin-top: 6px; display: flex; align-items: center; justify-content: center; gap: 6px; }
   .photo-input { display: none; }
   .photo-count { font-size: 11px; color: var(--gray-mid); margin-top: 4px; }
-
-  /* DRAFT TOAST */
-  .draft-toast { position:fixed; bottom:80px; left:50%; transform:translateX(-50%); background:#323232; color:white; padding:10px 20px; border-radius:24px; font-size:13px; font-weight:600; z-index:300; opacity:0; transition:opacity 0.3s; pointer-events:none; white-space:nowrap; }
-  .draft-toast.show { opacity:1; }
-  .draft-banner { margin:10px 10px 0; background:#FFF8E1; border:1.5px solid #FFE082; border-radius:12px; padding:13px 15px; display:none; }
-  .draft-banner-row { display:flex; align-items:center; justify-content:space-between; gap:10px; }
-  .draft-banner-text { font-size:13px; font-weight:600; color:#E65100; }
-  .draft-banner-btns { display:flex; gap:8px; flex-shrink:0; }
-  .draft-banner-btns button { padding:7px 14px; border-radius:8px; font-size:13px; font-weight:700; cursor:pointer; font-family:inherit; border:none; }
 
   /* SECTION LABELS */
   .sub-label { font-size: 11px; font-weight: 700; color: var(--gray-mid); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; margin-top: 2px; }
@@ -161,42 +149,68 @@
       <div class="company" id="h-company">קרני השחר בע"מ</div>
     </div>
     <div class="date-badge">
-      <div class="day" id="today-day">28</div>
-      <div class="month" id="today-month">יוני</div>
+      <div class="day" id="today-day">--</div>
+      <div class="month" id="today-month">---</div>
     </div>
   </div>
   <div class="lang-bar">
-    <button class="lang-btn active" onclick="setLang(&#39;he&#39;)">עברית</button>
-    <button class="lang-btn" onclick="setLang(&#39;ar&#39;)">العربية</button>
+    <button class="lang-btn active" onclick="setLang('he')">עברית</button>
+    <button class="lang-btn" onclick="setLang('ar')">العربية</button>
   </div>
-  <div class="progress-bar"><div class="progress-fill" id="progress" style="width: 53%;"></div></div>
+  <div style="display:flex;gap:8px;margin-top:8px">
+    <button type="button" onclick="saveDraft()" style="flex:1;padding:9px;background:#FFA000;color:white;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit" id="btn-save-draft">💾 שמור טיוטה</button>
+    <button type="button" onclick="showDraftsModal()" style="flex:1;padding:9px;background:#0D47A1;color:white;border:1.5px solid #42A5F5;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit" id="btn-my-drafts">📂 הטיוטות שלי</button>
+  </div>
+  <div id="draft-status" style="font-size:11px;color:#90CAF9;margin-top:4px;text-align:center"></div>
+  <div class="progress-bar"><div class="progress-fill" id="progress"></div></div>
+</div>
+
+<!-- DRAFTS MODAL -->
+<div id="drafts-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:998;padding:20px;overflow-y:auto">
+  <div style="background:white;border-radius:14px;max-width:500px;margin:30px auto;overflow:hidden">
+    <div style="background:#1A237E;color:white;padding:16px;display:flex;justify-content:space-between;align-items:center">
+      <span style="font-weight:700;font-size:16px" id="drafts-modal-title">📂 הטיוטות שלי</span>
+      <button onclick="closeDraftsModal()" style="background:none;border:none;color:white;font-size:22px;cursor:pointer">✕</button>
+    </div>
+    <div id="drafts-list" style="padding:16px;max-height:60vh;overflow-y:auto">
+      <div style="text-align:center;color:#9E9E9E;padding:20px">טוען...</div>
+    </div>
+    <div style="padding:0 16px 16px">
+      <label style="display:flex;align-items:center;gap:8px;font-size:13px;color:#616161;cursor:pointer">
+        <input type="checkbox" id="show-all-drafts" onchange="showDraftsModal()"> הצג טיוטות של כולם (מנהל)
+      </label>
+    </div>
+  </div>
 </div>
 
 <form id="workForm" onsubmit="submitForm(event)">
 
-<!-- 0. נוכחות בוקר -->
+<!-- 1. פרטי יום -->
 <div class="section">
-  <div class="section-header" style="background:#2E7D32"><span class="num" style="background:rgba(255,255,255,0.2)">✓</span> <span id="s0-title">נוכחות בוקר</span></div>
+  <div class="section-header" style="background:#2E7D32"><span class="num">☀️</span> <span id="s0-title">נוכחות בוקר</span></div>
   <div class="section-body">
-    <div class="hint" style="margin-bottom:12px" id="attend-hint">סמן כל עובד שהגיע היום לאתר</div>
-    <div id="attendance-list" style="display:flex;flex-direction:column;gap:8px"></div>
-    <button type="button" onclick="addAttendWorker()" style="margin-top:10px;background:var(--light-green);border:1.5px dashed #A5D6A7;border-radius:7px;color:var(--green);font-size:13px;font-weight:600;padding:9px;cursor:pointer;width:100%;font-family:inherit">+ <span id="lbl-add-attend">הוסף עובד שלא ברשימה</span></button>
+    <div class="hint" style="margin-bottom:10px" id="att-hint">סמן מי הגיע היום לעבודה</div>
+    <div class="attendance-grid" id="attendance-grid"></div>
+    <div style="display:flex;gap:8px;margin-top:10px">
+      <input type="text" id="new-worker-input" placeholder="שם עובד חדש..." style="flex:1;padding:10px 13px;border:1.5px solid var(--border);border-radius:8px;font-size:15px;font-family:inherit;direction:rtl">
+      <button type="button" onclick="addNewWorkerToAttendance()" style="padding:10px 16px;background:var(--navy);color:white;border:none;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap">+ הוסף</button>
+    </div>
+  <div style="margin-top:10px;padding:10px;background:#F5F5F5;border-radius:8px;font-size:13px;color:var(--gray-mid)" id="att-summary">לא נבחר עדיין</div>
   </div>
 </div>
 
-<!-- 1. פרטי יום -->
 <div class="section">
   <div class="section-header"><span class="num">1</span> <span id="s1-title">פרטי היום</span></div>
   <div class="section-body">
     <div class="grid2">
       <div class="field">
         <label><span id="l-date">תאריך העבודה</span> <span class="req">*</span></label>
-        <input type="date" id="work_date" required="" onchange="updateProgress()">
+        <input type="date" id="work_date" required onchange="updateProgress()">
       <div class="hint" id="h-work-date">📅 תאריך שבו בוצעה העבודה — ברירת מחדל: אתמול</div>
       </div>
       <div class="field">
         <label><span id="l-project">פרויקט</span> <span class="req">*</span></label>
-        <select id="project" required="" onchange="updateProgress(); updateLocations()">
+        <select id="project" required onchange="updateProgress(); updateLocations()">
           <option value="" id="opt-proj-ph">— בחר —</option>
           <option value="בלינסון">בלינסון</option>
           <option value="השרון">השרון</option>
@@ -208,7 +222,7 @@
     </div>
     <div class="field">
       <label><span id="l-manager">מנהל עבודה</span> <span class="req">*</span></label>
-      <select id="manager_name" required="" onchange="handleManagerChange(this)">
+      <select id="manager_name" required onchange="handleManagerChange(this)" >
         <option value="" id="opt-mgr-ph">— בחר מנהל עבודה —</option>
         <optgroup label="מנהלי עבודה">
           <option value="מאיר פרץ">מאיר פרץ</option>
@@ -229,15 +243,20 @@
       <input type="text" id="manager_custom" placeholder="שם מנהל / ראש צוות" style="display:none;margin-top:6px">
       <div class="hint" id="hint-mgr">אם שמך לא מופיע — פנה לדוד | إذا لم يظهر اسمك — تواصل مع داود</div>
     </div>
+    <div class="field">
+      <label id="l-journal-day">מספר יומן (ליום זה) <span class="req">*</span></label>
+      <input type="number" id="journal_day" placeholder="לדוגמה: 2383" required style="font-weight:700;font-size:18px;color:#1A237E;border-color:#7986CB;background:#F0F4FF">
+      <div class="hint" id="hint-journal-day">📓 הכנס את מספר היומן שקיבלת מהמשרד לאותו יום</div>
+    </div>
     <div class="grid2">
       <div class="field">
-        <label id="l-start">שעת התחלה</label>
-        <input type="time" id="start_time" value="07:00">
+        <label id="l-start">שעת התחלה</label> <span class="req">*</span>
+        <input type="time" id="start_time" value="07:00" required>
         <div class="hint">⏰ שעה שהתחלתם לעבוד באתר</div>
       </div>
       <div class="field">
-        <label id="l-end">שעת סיום</label>
-        <input type="time" id="end_time" value="15:00">
+        <label id="l-end">שעת סיום</label> <span class="req">*</span>
+        <input type="time" id="end_time" value="15:00" required>
         <div class="hint">⏰ שעה שסיימתם לעבוד באתר</div>
       </div>
     </div>
@@ -249,7 +268,17 @@
   <div class="section-header"><span class="num">2</span> <span id="s2-title">מיקום העבודה</span></div>
   <div class="section-body">
     <div class="field">
-      <label><span id="l-area">אזור / קומה</span></label>
+      <label id="l-building">בניין <span class="req">*</span></label>
+      <div class="location-grid" id="building-grid">
+        <div style="grid-column:1/-1;color:#9E9E9E;font-size:13px;text-align:center;padding:10px" id="building-ph">בחר פרויקט כדי לראות בניינים</div>
+      </div>
+      <input type="hidden" id="building">
+      <input type="text" id="building_custom" placeholder="בניין חדש..." style="display:none;margin-top:6px" oninput="updateCustomBuilding(this)">
+      <button type="button" id="btn-add-building" onclick="showCustomBuilding()" style="display:none;margin-top:6px;background:var(--light-blue);border:1.5px dashed #90CAF9;border-radius:7px;color:var(--blue);font-size:13px;font-weight:600;padding:8px 14px;cursor:pointer;font-family:inherit">+ הוסף בניין חדש</button>
+      <div class="hint">🏢 בחר את הבניין שבו בוצעה העבודה</div>
+    </div>
+    <div class="field">
+      <label><span id="l-area">קומה / אזור</span></label>
       <div class="location-grid" id="location-grid">
         <div style="grid-column:1/-1;color:#9E9E9E;font-size:13px;text-align:center;padding:10px" id="loc-ph">בחר פרויקט כדי לראות אזורים</div>
       </div>
@@ -258,8 +287,8 @@
       <input type="text" id="location_custom" placeholder="מיקום חדש..." style="display:none;margin-top:6px" oninput="updateCustomLocation(this)">
     </div>
     <div class="field">
-      <label id="l-locdetail">פירוט נוסף</label>
-      <input type="text" id="location_detail" placeholder="חדר, מחלקה, קומה...">
+      <label id="l-locdetail">פירוט נוסף</label> <span class="req">*</span>
+      <input type="text" id="location_detail" placeholder="חדר, מחלקה, קומה..." required>
       <div class="hint" id="h-locdetail">📍 דייק את המיקום — לדוגמה: חדר 12, מסדרון מזרחי, ליד מעלית</div>
     </div>
   </div>
@@ -270,91 +299,14 @@
   <div class="section-header"><span class="num">3</span> <span id="s3-title">עבודות שבוצעו</span></div>
   <div class="section-body">
     <div class="hint" style="margin-bottom:10px" id="tasks-hint">כל עבודה = רמדור נפרד. הוסף עבודה לכל משימה שבוצעה היום.</div>
-    <div class="tasks-container" id="tasks-container"><div class="task-card" id="task-1" data-task-id="1">
-    <div class="task-card-header">
-      <span>עבודה 1</span>
-      
-    </div>
-    <div class="task-card-body">
-      <!-- תיאור + יומן -->
-      <div class="field">
-        <textarea data-role="desc" placeholder="תיאור העבודה *" oninput="checkTaskFilled(1)"></textarea>
-        <div class="hint">✏️ תאר מה בוצע — לדוגמה: החלפת צנרת ניקוז בחדר 12, תיקון נזילה מסדרון קומה 2</div>
-      </div>
-      <div class="grid2">
-        <div class="field">
-          <label>מספר יומן</label>
-          <input type="number" data-role="journal" placeholder="1521">
-          <div class="hint">📓 מספר היומן מהמערכת — אם ידוע. אפשר להשלים מאוחר יותר</div>
-        </div>
-        <div class="field">
-          <label>🔢 מספר רמדור</label>
-          <input type="number" data-role="ramdor" placeholder="למשל: 2516" style="border-color:#7986CB;background:#F0F4FF">
-          <div class="hint">🔢 ימולא לאחר קבלת חשבון עסקה מהמשרד</div>
-        </div>
-      </div>
-      <div class="field">
-        <label>מי הזמין את העבודה</label>
-        <select data-role="mazmin" onchange="handleMazminChange(this, 1)">
-          <option value="">— מי הזמין —</option><option value="אבי">אבי</option><option value="אוריאל">אוריאל</option><option value="איתמר">איתמר</option><option value="ברק">ברק</option><option value="גנדי">גנדי</option><option value="דוד רם">דוד רם</option><option value="יגאל">יגאל</option><option value="יואב ארגוב">יואב ארגוב</option><option value="יעקב">יעקב</option><option value="ציון">ציון</option><option value="מוטי משיח">מוטי משיח</option><option value="נריה">נריה</option><option value="עדי">עדי</option><option value="עופר">עופר</option><option value="פינקו">פינקו</option><option value="קובי">קובי</option><option value="רמי">רמי</option><option value="רמי חלא">רמי חלא</option><option value="רמי מזרחי">רמי מזרחי</option><option value="רוני מכמל">רוני מכמל</option><option value="רוני חתוכה">רוני חתוכה</option><option value="סמי">סמי</option><option value="שלמה סגיס">שלמה סגיס</option><option value="שמואל">שמואל</option><option value="שרון סרבי">שרון סרבי</option><option value="צביקה">צביקה</option><option value="אחר">אחר</option><option value="__new__">+ הוסף חדש</option>
-        </select>
-        <input type="text" data-role="mazmin-custom" placeholder="שם המזמין" style="display:none;margin-top:6px">
-      </div>
-
-      <!-- פועלים -->
-      <div class="sub-section">
-        <div class="sub-label" data-role="workers-sub">👷 פועלים בעבודה זו</div>
-        <div class="hint" style="margin-bottom:8px">רשום כל פועל שעבד על המשימה הזו — שם מלא, מקצוע, כמה שעות עבד</div>
-        <div class="workers-in-task" id="workers-1"><div class="worker-row-small" data-role="worker-row" id="wr-1-1">
-    <input type="text" placeholder="שם פועל *">
-    <select><option value="">מקצוע</option><option>אינסטלטור</option><option>שרברב</option><option>פועל כללי</option><option>ריתוך</option><option>חשמלאי</option><option>אחר</option></select>
-    <input type="number" placeholder="שעות" value="8" min="1" max="14">
-    <span></span>
-  </div></div>
-        <button type="button" class="add-worker-small" data-role="add-worker" onclick="addWorker(1)">+ הוסף פועל</button>
-      </div>
-
-      <div class="sub-section">
-        <div class="sub-label" data-role="materials-sub">🧱 חומרים ששימשו</div>
-        <div class="hint" style="margin-bottom:8px">רשום חומרים שנצרכו — צינור, ברז, בידוד וכו׳. כמות ויחידה חשובים לחשבון</div>
-        <div class="materials-container" id="materials-1"></div>
-        <button type="button" class="add-material-btn" data-role="add-mat" onclick="addMaterial(1)">+ הוסף חומר</button>
-      </div>
-
-      <!-- הערות לעבודה -->
-      <div class="field">
-        <label>הערות לעבודה זו</label>
-        <textarea data-role="task-notes" placeholder="לדוגמה: עבודה לא הסתיימה, נמשיך מחר | צריך אישור מהמהנדס | בעיה בצינור קיים" style="min-height:55px"></textarea>
-        <div class="hint">💡 הערות ספציפיות לעבודה זו — לא לשכוח כלום!</div>
-      </div>
-
-      <!-- תמונות -->
-      <div class="photos-sub-section">
-        <div class="sub-label" data-role="photos-sub">📷 תמונות מהעבודה</div>
-        <div class="photos-grid" id="photos-grid-1"></div>
-        <div class="photo-count" id="photo-count-1"></div>
-        <input type="file" class="photo-input" id="photo-input-1" accept="image/*" multiple="" onchange="handlePhotos(1, this)">
-        <button type="button" class="add-photo-btn" data-role="add-photo" onclick="document.getElementById(&#39;photo-input-1&#39;).click()">📷 צרף תמונה</button>
-      </div>
-    </div>
-  </div></div>
+    <div class="tasks-container" id="tasks-container"></div>
     <button type="button" class="add-task-btn" onclick="addTask()" id="btn-add-task">➕ הוסף עבודה</button>
   </div>
 </div>
 
-<!-- 3ב. עבודות שנכנסו -->
+<!-- 4. הערות כלליות -->
 <div class="section">
-  <div class="section-header"><span class="num">4</span> <span id="s4b-title">עבודות שנכנסו היום</span></div>
-  <div class="section-body">
-    <div class="hint" style="margin-bottom:10px" id="incoming-hint">רשום כל בקשת עבודה חדשה שהגיעה היום — גם אם עדיין לא בוצעה</div>
-    <div class="tasks-container" id="incoming-container"></div>
-    <button type="button" class="add-task-btn" onclick="addIncoming()" id="btn-add-incoming" style="border-color:#CE93D8;color:#6A1B9A;background:#F3E5F5">➕ <span id="lbl-add-incoming">הוסף בקשה</span></button>
-  </div>
-</div>
-
-<!-- 5. הערות כלליות -->
-<div class="section">
-  <div class="section-header"><span class="num">5</span> <span id="s4-title">הערות כלליות</span></div>
+  <div class="section-header"><span class="num">4</span> <span id="s4-title">הערות כלליות</span></div>
   <div class="section-body">
     <div class="field">
       <label id="l-notes">הערות, בעיות, המשך מחר</label>
@@ -373,12 +325,12 @@
 </div>
 
 <!-- SUMMARY -->
-<div class="summary-box" id="summary-box" style="display: none;">
+<div class="summary-box" id="summary-box">
   <div class="summary-title" id="sum-title">📊 סיכום</div>
-  <div class="summary-row"><span id="sl-date">תאריך</span><span class="val" id="sum-date">27/06/2026</span></div>
+  <div class="summary-row"><span id="sl-date">תאריך</span><span class="val" id="sum-date">—</span></div>
   <div class="summary-row"><span id="sl-proj">פרויקט</span><span class="val" id="sum-proj">—</span></div>
   <div class="summary-row"><span id="sl-mgr">מנהל</span><span class="val" id="sum-mgr">—</span></div>
-  <div class="summary-row"><span id="sl-tasks">עבודות</span><span class="val" id="sum-tasks">1</span></div>
+  <div class="summary-row"><span id="sl-tasks">עבודות</span><span class="val" id="sum-tasks">0</span></div>
   <div class="summary-row"><span id="sl-workers">פועלים</span><span class="val" id="sum-workers">0</span></div>
 </div>
 
@@ -386,20 +338,6 @@
   <button type="submit" class="submit-btn" id="submit-btn">✅ שלח יומן עבודה</button>
 </div>
 </form>
-
-<!-- Draft banner -->
-<div class="draft-banner" id="draft-banner">
-  <div class="draft-banner-row">
-    <div class="draft-banner-text">📝 יש טיוטה שמורה — רוצה להמשיך ממנה?</div>
-    <div class="draft-banner-btns">
-      <button onclick="discardDraft()" style="background:#EEE;color:#333">מחק</button>
-      <button onclick="restoreDraft()" style="background:#E65100;color:white">שחזר</button>
-    </div>
-  </div>
-</div>
-
-<!-- Toast -->
-<div class="draft-toast" id="draft-toast">💾 טיוטה נשמרה</div>
 
 <div class="success-screen" id="success-screen">
   <div class="success-icon">✅</div>
@@ -409,7 +347,57 @@
 </div>
 
 <script>
-const SHEET_URL = 'https://script.google.com/macros/s/AKfycbxSMWVQdPvH1Wdo2CoUBVMZ9l1UjViRMDg_ZMTTnhUSWb8m-9mtOIcZsSuBZe5hm4nGnQ/exec';
+const SHEET_URL = 'https://script.google.com/macros/s/AKfycbxiVcXr-8m1SUc-nvXMuBKVP1LjhZhQihxSwGoYQ3OQzqTABU5vpxITqPN3c1_tEWPbHQ/exec';
+
+const BUILDINGS = {
+  'בלינסון': ['גור שאשא','דוידוף','נשים','מרפאות','חדרי ניתוח','מעבדות','מיון','מכלול מערבי','שניידר','מוקד אחזקה','פתולוגיה','בית ספר לאחיות','מטבח','יולדות','חניון','פנימית ב','פנימית ג','פנימית ד','פנימית ה','פנימית ו','אחר'],
+  'השרון':   ['פנימית ב','פנימית ג','פנימית ד','פנימית ה','פנימית ו','טיפול נמרץ לב','דיאליזה','מטבח ראשי','בית ספר לאחיות','חדר מכונות','חדרי ניתוח','מעבדות','בית כנסת','קפיטריה','אחר'],
+  'גהה':     ['בניין ראשי','מרפאות','מיון','אחר'],
+  'כרמיאל':  ['בניין ראשי','אחר'],
+};
+
+const FLOORS = {
+  'בלינסון': {
+    'גור שאשא': ['קומה -1','קומה 0','קומה 1','קומה 2','קומה 3','קומה 4','קומה 5','קומה 6','קומה 7','קומה 8','קומה 9','גג'],
+    'דוידוף': ['קומה -1','קומה 0','קומה 1','קומה 2','קומה 3','קומה 4','קומה 5','קומה 6','קומה 7','קומה 8','קומה 9','גג','חדר מכונות'],
+    'נשים': ['קומה 0','קומה 1','קומה 2','קומה 3','קומה 4','גג'],
+    'מרפאות': ['קומה 0','קומה 1','קומה 2','קומה 3','קומה 4','גג'],
+    'חדרי ניתוח': ['קומה 0','קומה 1','אגף ניתוחים'],
+    'מעבדות': ['קומה 0','קומה 1','קומה 2','קומה 3','קומה 4','קומה 5','גג'],
+    'מיון': ['מינוס 2','מינוס 1','קומה 0'],
+    'מכלול מערבי': ['קומה 0','קומה 1','קומה 2','גג'],
+    'שניידר': ['קומה 0','קומה 1','קומה 2','קומה 3','גג'],
+    'מוקד אחזקה': ['מחסן','חדר מכונות','כללי'],
+    'פתולוגיה': ['קומה 0','קומה 1'],
+    'בית ספר לאחיות': ['קומה 0','קומה 1','גג'],
+    'מטבח': ['מטבח ראשי','מטבח חלוקה','גג'],
+    'יולדות': ['קומה 0','קומה 1','קומה 2','קומה 3'],
+    'חניון': ['קומה -1','קומה -2','רמפה'],
+    'פנימית ב': ['קומה 0','קומה 1','קומה 2','קומה 3','גג'],
+    'פנימית ג': ['קומה 0','קומה 1','קומה 2','קומה 3','גג'],
+    'פנימית ד': ['קומה 0','קומה 1','קומה 2','קומה 3','גג'],
+    'פנימית ה': ['קומה 0','קומה 1','קומה 2','קומה 3','גג'],
+    'פנימית ו': ['קומה 0','קומה 1','קומה 2','קומה 3','גג'],
+  },
+  'השרון': {
+    'פנימית ב': ['קומה 0','קומה 1','קומה 2','קומה 3','גג'],
+    'פנימית ג': ['קומה 0','קומה 1','קומה 2','קומה 3','גג'],
+    'פנימית ד': ['קומה 0','קומה 1','קומה 2','גג'],
+    'פנימית ה': ['קומה 0','קומה 1','קומה 2','קומה 3','גג'],
+    'פנימית ו': ['קומה 0','קומה 1','קומה 2','קומה 3','גג'],
+    'טיפול נמרץ לב': ['קומה 1','קומה 2'],
+    'דיאליזה': ['קומה 0','קומה 1'],
+    'מטבח ראשי': ['קומה 0','גג'],
+    'בית ספר לאחיות': ['קומה 0','קומה 1','גג'],
+    'חדר מכונות': ['מרתף','קומה 0'],
+    'חדרי ניתוח': ['קומה 1','קומה 2'],
+    'מעבדות': ['קומה 0','קומה 1'],
+    'בית כנסת': ['קומה 0'],
+    'קפיטריה': ['קומה 0'],
+  },
+  'גהה': { 'בניין ראשי': ['קומה 0','קומה 1','קומה 2','גג'], },
+  'כרמיאל': { 'בניין ראשי': ['קומה 0','קומה 1','גג'], },
+};
 
 const LOCATIONS = {
   'בלינסון': ['קומה 0','קומה 1','קומה 2','קומה 3','קומה 4','גג','כירורגיה','עיניים','דיאליזה','פתולוגיה','חבטמ','מטבח','גנרטורים','אחר'],
@@ -424,6 +412,13 @@ const MAZMINIM = {
   'גהה':     ['רמי','עדי','אחר'],
   'כרמיאל':  ['שמואל','אחר'],
 };
+
+const WORKERS = {
+  'ראשי צוות': ['מנסור','אבו חליל','רוני ברמי','משה דדוש','מחמד','עדנן','כאמל','יוסף בן שמעון'],
+  'עוזרים': ['מוסבח','אחמד','טארק','הילאל','אלכס נזרוב'],
+  'מנהלים': ['דוד גבאי','מאיר פרץ','אלי חגג'],
+};
+const ALL_WORKERS = ['מנסור','אבו חליל','רוני ברמי','משה דדוש','מחמד','עדנן','כאמל','יוסף בן שמעון','מוסבח','אחמד','טארק','הילאל','אלכס נזרוב','דוד גבאי','מאיר פרץ','אלי חגג'];
 
 const ALL_MAZMINIM = ['אבי','אוריאל','איתמר','ברק','גנדי','דוד רם','יגאל','יואב ארגוב','יעקב','ציון','מוטי משיח','נריה','עדי','עופר','פינקו','קובי','רמי','רמי חלא','רמי מזרחי','רוני מכמל','רוני חתוכה','סמי','שלמה סגיס','שמואל','שרון סרבי','צביקה','אחר'];
 
@@ -658,6 +653,120 @@ function updateTaskLang(id, t) {
 }
 
 // ── תאריך ───────────────────────────────────────────
+function addNewWorkerToAttendance() {
+  const inp = document.getElementById('new-worker-input');
+  const name = inp.value.trim();
+  if (!name) return;
+  if (ALL_WORKERS.includes(name)) { alert('העובד כבר ברשימה'); return; }
+  
+  // הוסף לרשימות
+  ALL_WORKERS.push(name);
+  WORKERS['עוזרים'].push(name);
+  
+  // הוסף שורה לנוכחות
+  const grid = document.getElementById('attendance-grid');
+  const row = document.createElement('div');
+  row.className = 'attendance-row';
+  row.id = 'att-' + name;
+  row.dataset.name = name;
+  row.dataset.status = '';
+  row.innerHTML = `
+    <div>
+      <div class="attendance-name">${name}</div>
+      <div class="attendance-role" style="color:#E65100">חדש</div>
+    </div>
+    <div class="attendance-toggle">
+      <button type="button" class="att-btn" onclick="setAttendance('${name}','present',this)">✅ הגיע</button>
+      <button type="button" class="att-btn" onclick="setAttendance('${name}','absent',this)">❌ לא הגיע</button>
+    </div>
+  `;
+  // הוסף בסוף הגריד
+  grid.appendChild(row);
+  
+  inp.value = '';
+  updateAttSummary();
+}
+
+function initAttendance() {
+  try {
+  const grid = document.getElementById('attendance-grid');
+  grid.innerHTML = '';
+  const groups = [
+    { label: 'ראשי צוות', workers: WORKERS['ראשי צוות'] },
+    { label: 'עוזרים',    workers: WORKERS['עוזרים'] },
+    { label: 'מנהלים',   workers: WORKERS['מנהלים'] },
+  ];
+  groups.forEach(g => {
+    const div = document.createElement('div');
+    div.innerHTML = `<div style="font-size:11px;font-weight:700;color:var(--gray-mid);text-transform:uppercase;margin:10px 0 6px">${g.label}</div>`;
+    grid.appendChild(div);
+    g.workers.forEach(name => {
+      const row = document.createElement('div');
+      row.className = 'attendance-row';
+      row.id = 'att-' + name;
+      row.dataset.name = name;
+      row.dataset.status = '';
+      row.innerHTML = `
+        <div>
+          <div class="attendance-name">${name}</div>
+          <div class="attendance-role">${g.label}</div>
+        </div>
+        <div class="attendance-toggle">
+          <button type="button" class="att-btn" onclick="setAttendance('${name}','present',this)">✅ הגיע</button>
+          <button type="button" class="att-btn" onclick="setAttendance('${name}','absent',this)">❌ לא הגיע</button>
+        </div>
+      `;
+      grid.appendChild(row);
+    });
+  });
+  updateAttSummary();
+  } catch(e) { console.error('attendance error:', e); }
+}
+
+function setAttendance(name, status, btn) {
+  const row = document.getElementById('att-' + name);
+  row.dataset.status = status;
+  row.className = 'attendance-row ' + status;
+  row.querySelectorAll('.att-btn').forEach(b => { b.classList.remove('yes','no'); });
+  btn.classList.add(status === 'present' ? 'yes' : 'no');
+  updateAttSummary();
+}
+
+function getAttendance(status) {
+  const rows = document.querySelectorAll('.attendance-row');
+  const names = [];
+  rows.forEach(r => { if (r.dataset.status === status) names.push(r.dataset.name); });
+  return names.join(', ');
+}
+
+function updateAttSummary() {
+  const present = document.querySelectorAll('.attendance-row.present').length;
+  const absent  = document.querySelectorAll('.attendance-row.absent').length;
+  const total   = document.querySelectorAll('.attendance-row').length;
+  const pNames  = getAttendance('present');
+  document.getElementById('att-summary').innerHTML = present > 0
+    ? `<strong style="color:var(--green)">✅ ${present} הגיעו:</strong> ${pNames}${absent > 0 ? ` | <strong style="color:var(--red)">❌ ${absent} לא הגיעו</strong>` : ''}`
+    : '<span style="color:var(--gray-mid)">לא נבחר עדיין</span>';
+}
+
+function loadSettingsFromSheet() {
+  const url = 'https://script.google.com/macros/s/AKfycbxiVcXr-8m1SUc-nvXMuBKVP1LjhZhQihxSwGoYQ3OQzqTABU5vpxITqPN3c1_tEWPbHQ/exec?action=getSettings';
+  fetch(url, { method: 'GET', mode: 'cors' })
+    .then(r => r.json())
+    .then(data => {
+      if (data && data.buildings) {
+        // עדכן BUILDINGS ו-FLOORS מהגיליון
+        Object.keys(data.buildings).forEach(proj => {
+          BUILDINGS[proj] = Object.keys(data.buildings[proj]);
+          BUILDINGS[proj].push('אחר');
+          FLOORS[proj] = data.buildings[proj];
+        });
+        console.log('✅ הגדרות נטענו מהגיליון');
+      }
+    })
+    .catch(e => console.log('⚠️ לא ניתן לטעון הגדרות — משתמש בברירת מחדל'));
+}
+
 function initDate() {
   const now = new Date();
   document.getElementById('today-day').textContent = now.getDate();
@@ -685,11 +794,70 @@ function updateCustomLocation(inp) {
   }
 }
 
+function updateBuildings() {
+  const proj = document.getElementById('project').value;
+  const grid = document.getElementById('building-grid');
+  document.getElementById('building').value = '';
+  document.getElementById('building_custom').style.display = 'none';
+  document.getElementById('building_custom').value = '';
+  if (!proj || !BUILDINGS[proj]) {
+    grid.innerHTML = '<div id="building-ph" style="grid-column:1/-1;color:#9E9E9E;font-size:13px;text-align:center;padding:10px">בחר פרויקט כדי לראות בניינים</div>';
+    document.getElementById('btn-add-building').style.display = 'none';
+    return;
+  }
+  grid.innerHTML = BUILDINGS[proj].map(b =>
+    `<button type="button" class="location-btn" onclick="selectBuilding('${b}',this)">${b}</button>`
+  ).join('');
+  document.getElementById('btn-add-building').style.display = 'inline-flex';
+}
+
+function selectBuilding(b, btn) {
+  document.querySelectorAll('#building-grid .location-btn').forEach(x => x.classList.remove('selected'));
+  btn.classList.add('selected');
+  document.getElementById('building').value = b;
+  document.getElementById('building_custom').value = '';
+  document.getElementById('building_custom').style.display = 'none';
+  updateFloors(b);
+  updateProgress();
+}
+
+function updateFloors(building) {
+  const proj = document.getElementById('project').value;
+  const grid = document.getElementById('location-grid');
+  selectedLocation = '';
+  document.getElementById('location').value = '';
+  document.querySelectorAll('.location-btn').forEach(b => b.classList.remove('selected'));
+  const floors = (FLOORS[proj] && FLOORS[proj][building]) ? FLOORS[proj][building] : [];
+  if (floors.length === 0) {
+    grid.innerHTML = '<div style="grid-column:1/-1;color:#9E9E9E;font-size:13px;text-align:center;padding:10px">בחר קומה / אזור ↓ או הקלד ידנית</div>';
+    return;
+  }
+  grid.innerHTML = floors.map(f =>
+    `<button type="button" class="location-btn" onclick="selectLocation('${f}',this)">${f}</button>`
+  ).join('') + `<button type="button" class="location-btn" onclick="selectLocation('אחר',this)">אחר</button>`;
+}
+
+function showCustomBuilding() {
+  const inp = document.getElementById('building_custom');
+  inp.style.display = 'block';
+  inp.focus();
+}
+
+function updateCustomBuilding(inp) {
+  const name = inp.value.trim();
+  if (name) {
+    document.getElementById('building').value = name;
+    document.querySelectorAll('#building-grid .location-btn').forEach(x => x.classList.remove('selected'));
+    updateProgress();
+  }
+}
+
 function updateLocations() {
   const proj = document.getElementById('project').value;
   const grid = document.getElementById('location-grid');
   selectedLocation = '';
   document.getElementById('location').value = '';
+  updateBuildings();
   const t = T[lang];
   if (!proj || !LOCATIONS[proj]) {
     grid.innerHTML = `<div id="loc-ph" style="grid-column:1/-1;color:#9E9E9E;font-size:13px;text-align:center;padding:10px">${t.locPh}</div>`;
@@ -742,23 +910,16 @@ function addTask() {
         <textarea data-role="desc" placeholder="${t.taskDesc}" oninput="checkTaskFilled(${id})"></textarea>
         <div class="hint">${lang==='he'?'✏️ תאר מה בוצע — לדוגמה: החלפת צנרת ניקוז בחדר 12, תיקון נזילה מסדרון קומה 2':'✏️ صف ما تم — مثال: تغيير أنابيب الصرف في غرفة 12'}</div>
       </div>
-      <div class="grid2">
-        <div class="field">
-          <label>${t.taskJournal}</label>
-          <input type="number" data-role="journal" placeholder="1521">
-          <div class="hint">${lang==='he'?'📓 מספר היומן מהמערכת — אם ידוע. אפשר להשלים מאוחר יותר':'📓 رقم السجل من النظام — إن وُجد'}</div>
-        </div>
-        <div class="field">
-          <label>${lang==='he'?'🔢 מספר רמדור':'🔢 رقم الرمدور'}</label>
-          <input type="number" data-role="ramdor" placeholder="${lang==='he'?'למשל: 2516':'مثال: 2516'}" style="border-color:#7986CB;background:#F0F4FF">
-          <div class="hint">${lang==='he'?'🔢 ימולא לאחר קבלת חשבון עסקה מהמשרד':'🔢 يُملأ بعد استلام حساب العمل من المكتب'}</div>
-        </div>
+      <div class="field">
+        <label>${lang==='he'?'🔢 מספר רמדור':'🔢 رقم الرمدور'}</label>
+        <input type="number" data-role="ramdor" placeholder="${lang==='he'?'למשל: 2516':'مثال: 2516'}" style="border-color:#7986CB;background:#F0F4FF">
+        <div class="hint">${lang==='he'?'🔢 ימולא לאחר קבלת חשבון עסקה מהמשרד':'🔢 يُملأ بعد استلام حساب العمل من المكتب'}</div>
       </div>
+
       <div class="field">
         <label>${t.taskMazmin}</label>
-        <select data-role="mazmin" onchange="handleMazminChange(this, ${id})">
+        <select data-role="mazmin" onchange="handleMazminChange(this, ${id})" required>
           ${mazOpts}
-          <option value="__new__">+ ${lang==='he'?'הוסף חדש':'أضف جديد'}</option>
         </select>
         <input type="text" data-role="mazmin-custom" placeholder="${lang==='he'?'שם המזמין':'اسم الطالب'}" style="display:none;margin-top:6px">
       </div>
@@ -768,11 +929,12 @@ function addTask() {
         <div class="sub-label" data-role="workers-sub">👷 ${t.workersSub}</div>
         <div class="hint" style="margin-bottom:8px">${lang==='he'?'רשום כל פועל שעבד על המשימה הזו — שם מלא, מקצוע, כמה שעות עבד':'سجّل كل عامل عمل في هذه المهمة — الاسم الكامل، المهنة، عدد الساعات'}</div>
         <div class="workers-in-task" id="workers-${id}"></div>
+        <button type="button" class="add-worker-from-list" onclick="addPresentWorkers(${id})">☀️ הוסף פועלים מנוכחות הבוקר</button>
         <button type="button" class="add-worker-small" data-role="add-worker" onclick="addWorker(${id})">${t.btnAddWorker}</button>
       </div>
 
       <div class="sub-section">
-        <div class="sub-label" data-role="materials-sub">🧱 ${t.materialsSub}</div>
+        <div class="sub-label" data-role="materials-sub">🧱 ${t.materialsSub} <span class="req">*</span></div>
         <div class="hint" style="margin-bottom:8px">${lang==='he'?'רשום חומרים שנצרכו — צינור, ברז, בידוד וכו׳. כמות ויחידה חשובים לחשבון':'سجّل المواد المستخدمة — أنبوب، صنبور، عازل وغيره. الكمية والوحدة مهمة للفاتورة'}</div>
         <div class="materials-container" id="materials-${id}"></div>
         <button type="button" class="add-material-btn" data-role="add-mat" onclick="addMaterial(${id})">${t.btnAddMat}</button>
@@ -814,7 +976,7 @@ function checkTaskFilled(id) {
 
 // ── פועלים בכרטיס ───────────────────────────────────
 let workerCounts = {};
-function addWorker(taskId) {
+function addWorker(taskId, prefillName) {
   workerCounts[taskId] = (workerCounts[taskId]||0) + 1;
   const wNum = workerCounts[taskId];
   const t = T[lang];
@@ -823,8 +985,9 @@ function addWorker(taskId) {
   div.className = 'worker-row-small';
   div.dataset.role = 'worker-row';
   div.id = `wr-${taskId}-${wNum}`;
+  const workerOpts = '<option value="">'+t.workerName+'</option>' + (typeof ALL_WORKERS !== 'undefined' ? ALL_WORKERS.map(w=>`<option value="${w}" ${w===prefillName?'selected':''}>${w}</option>`).join('') : '') + '<option value="__other__">+ אחר</option>';
   div.innerHTML = `
-    <input type="text" placeholder="${t.workerName}">
+    <select>${workerOpts}</select>
     <select><option value="">${t.tradeOpt}</option>${t.trades.map(tr=>`<option>${tr}</option>`).join('')}</select>
     <input type="number" placeholder="${t.workerHours}" value="8" min="1" max="14">
     ${wNum > 1 ? `<button type="button" class="remove-worker-small" onclick="this.parentElement.remove()">✕</button>` : '<span></span>'}
@@ -880,20 +1043,76 @@ function updateSummary() {
 function formatDate(d) { const [y,m,day]=d.split('-'); return `${day}/${m}/${y}`; }
 
 // ── שליחה ───────────────────────────────────────────
+function validateForm() {
+  const errors = [];
+
+  const presentCount = document.querySelectorAll('.attendance-row.present').length;
+  if (presentCount === 0) errors.push(lang==='he' ? '☀️ סמן נוכחות בוקר — לפחות פועל אחד' : '☀️ حدد الحضور الصباحي');
+
+  if (!document.getElementById('journal_day').value.trim()) errors.push(lang==='he'?'📓 חסר מספר יומן (חובה!)':'📓 رقم السجل ناقص (إلزامي!)');
+
+  const cards = document.querySelectorAll('.task-card');
+  if (cards.length === 0) errors.push(lang==='he' ? '➕ הוסף לפחות עבודה אחת' : '➕ أضف عملاً واحداً على الأقل');
+
+  cards.forEach((card, idx) => {
+    const n = idx + 1;
+    const desc = card.querySelector('[data-role="desc"]').value.trim();
+    if (!desc) errors.push(`${lang==='he'?'עבודה':'عمل'} ${n}: ${lang==='he'?'חסר תיאור עבודה':'وصف العمل ناقص'}`);
+
+    const mazminSel = card.querySelector('[data-role="mazmin"]');
+    const mazminCustom = card.querySelector('[data-role="mazmin-custom"]');
+    const mazminVal = mazminSel.value === '__new__' ? (mazminCustom ? mazminCustom.value.trim() : '') : mazminSel.value;
+    if (!mazminVal) errors.push(`${lang==='he'?'עבודה':'عمل'} ${n}: ${lang==='he'?'חסר מזמין העבודה':'الطالب ناقص'}`);
+
+    const workerRows = card.querySelectorAll('[data-role="worker-row"]');
+    let hasWorker = false;
+    workerRows.forEach(row => {
+      const sels = row.querySelectorAll('select');
+      if (sels[0] && sels[0].value && sels[0].value !== '__other__') hasWorker = true;
+    });
+    if (!hasWorker) errors.push(`${lang==='he'?'עבודה':'عمل'} ${n}: ${lang==='he'?'חסר פועל אחד לפחות':'يلزم عامل واحد على الأقل'}`);
+
+    const matRows = card.querySelectorAll('[data-role="mat-row"]');
+    let hasMaterial = false;
+    matRows.forEach(row => {
+      const nm = row.querySelector('[data-role="mat-name"]');
+      if (nm && nm.value.trim()) hasMaterial = true;
+    });
+    if (!hasMaterial) errors.push(`${lang==='he'?'עבודה':'عمل'} ${n}: ${lang==='he'?'חסר חומר אחד לפחות':'تلزم مادة واحدة على الأقل'}`);
+  });
+
+  if (!document.getElementById('work_date').value) errors.push(lang==='he'?'חסר תאריך':'التاريخ ناقص');
+  if (!document.getElementById('project').value) errors.push(lang==='he'?'חסר פרויקט':'المشروع ناقص');
+  const mgrVal = document.getElementById('manager_custom').value.trim() || document.getElementById('manager_name').value;
+  if (!mgrVal) errors.push(lang==='he'?'חסר מנהל עבודה':'مشرف العمل ناقص');
+  if (!document.getElementById('building').value && !document.getElementById('building_custom').value) errors.push(lang==='he'?'חסר בניין':'المبنى ناقص');
+  if (!document.getElementById('location').value) errors.push(lang==='he'?'חסר קומה/אזור':'الطابق/المنطقة ناقص');
+  if (!document.getElementById('location_detail').value.trim()) errors.push(lang==='he'?'חסר פירוט מיקום':'تفاصيل الموقع ناقصة');
+
+  return errors;
+}
+
 function submitForm(e) {
   e.preventDefault();
+
+  const errors = validateForm();
+  if (errors.length > 0) {
+    alert((lang==='he' ? '⚠️ יש להשלים את השדות הבאים:\n\n' : '⚠️ يجب إكمال الحقول التالية:\n\n') + errors.join('\n'));
+    return;
+  }
+
   const tasks = [];
   document.querySelectorAll('.task-card').forEach(card => {
     const taskId = card.dataset.taskId;
-    // פועלים
     const workers = [];
     card.querySelectorAll('[data-role="worker-row"]').forEach(row => {
-      const name = row.querySelector('input[type="text"]').value.trim();
-      const trade = row.querySelector('select').value;
-      const hours = row.querySelector('input[type="number"]').value;
-      if (name) workers.push({name, trade, hours});
+      const sels = row.querySelectorAll('select');
+      const name = sels[0] ? sels[0].value : '';
+      const trade = sels[1] ? sels[1].value : '';
+      const hours = row.querySelector('input[type="number"]') ? row.querySelector('input[type="number"]').value : '';
+      if (name && name !== '__other__') workers.push({name, trade, hours});
     });
-    // חומרים
+
     const materials = [];
     card.querySelectorAll('[data-role="mat-row"]').forEach(row => {
       const name = row.querySelector('[data-role="mat-name"]').value.trim();
@@ -904,9 +1123,8 @@ function submitForm(e) {
     tasks.push({
       task_num: taskId,
       description: card.querySelector('[data-role="desc"]').value,
-      journal_number: card.querySelector('[data-role="journal"]').value,
       ramdor: card.querySelector('[data-role="ramdor"]') ? card.querySelector('[data-role="ramdor"]').value : '',
-      mazmin: card.querySelector('[data-role="mazmin"]').value,
+      mazmin: card.querySelector('[data-role="mazmin"]').value === '__new__' ? (card.querySelector('[data-role="mazmin-custom"]')?card.querySelector('[data-role="mazmin-custom"]').value:'') : card.querySelector('[data-role="mazmin"]').value,
       task_notes: card.querySelector('[data-role="task-notes"]').value,
       workers, materials,
       photos: taskPhotos[taskId] || [],
@@ -916,11 +1134,18 @@ function submitForm(e) {
 
   const baseData = {
     timestamp: new Date().toISOString(),
+    draft_id: currentDraftId,
+    device_id: getDeviceId(),
+    attendance_present: getAttendance('present'),
+    attendance_absent: getAttendance('absent'),
+    attendance_count: document.querySelectorAll('.attendance-row.present').length,
     work_date: document.getElementById('work_date').value,
     manager: document.getElementById('manager_custom').value.trim() || document.getElementById('manager_name').value,
     project: document.getElementById('project').value,
+    building: document.getElementById('building').value || document.getElementById('building_custom').value,
     location: selectedLocation,
     location_detail: document.getElementById('location_detail').value,
+    journal_day: document.getElementById('journal_day').value,
     start_time: document.getElementById('start_time').value,
     end_time: document.getElementById('end_time').value,
     notes: document.getElementById('notes').value,
@@ -928,12 +1153,12 @@ function submitForm(e) {
     form_lang: lang,
   };
 
-  // שלח שורה נפרדת לכל עבודה
   const rows = tasks.map(task => ({
     ...baseData,
+    action: 'submit',
     task_num: task.task_num,
     description: task.description,
-    journal_number: task.journal_number,
+    journal_day: baseData.journal_day,
     ramdor: task.ramdor || '',
     mazmin: task.mazmin,
     task_notes: task.task_notes,
@@ -944,32 +1169,8 @@ function submitForm(e) {
     materials: task.materials.map(m=>`${m.name} ${m.qty} ${m.unit}`).join(' | '),
     photos_count: task.photos_count,
     photos_names: task.photos.map(p=>p.name).join(', '),
-    // תמונות base64 — נשלחות רק אם יש URL לסקריפט
     photos_data: SHEET_URL ? task.photos.map(p=>p.base64) : [],
   }));
-
-  // נוכחות
-  const attend = getAttendanceData();
-  baseData.attendance_present = attend.present.join(', ');
-  baseData.attendance_absent = attend.absent.join(', ');
-  baseData.attendance_count = attend.present.length;
-
-  // איסוף עבודות שנכנסו
-  const incoming = [];
-  document.querySelectorAll('#incoming-container .task-card').forEach(card => {
-    const desc = card.querySelector('[data-role="inc-desc"]').value.trim();
-    if (!desc) return;
-    incoming.push({
-      description: desc,
-      mazmin: card.querySelector('[data-role="inc-mazmin"]').value,
-      location: card.querySelector('[data-role="inc-location"]').value,
-      urgency: card.querySelector('[data-role="inc-urgency-val"]').value,
-    });
-  });
-  baseData.incoming_work = incoming.map(i =>
-    `[${i.urgency||'—'}] ${i.description} | ${i.mazmin||'—'} | ${i.location||'—'}`
-  ).join('\n');
-  baseData.incoming_count = incoming.length;
 
   const btn = document.getElementById('submit-btn');
   btn.disabled = true;
@@ -990,16 +1191,13 @@ function showSuccess(data, taskCount) {
   document.getElementById('suc-p').innerHTML = lang==='he'
     ? `${formatDate(data.work_date)} | ${data.project}<br>${taskCount} עבודות נשמרו לגיליון`
     : `${formatDate(data.work_date)} | ${data.project}<br>تم حفظ ${taskCount} أعمال`;
-  localStorage.removeItem(DRAFT_KEY);
   document.getElementById('success-screen').classList.add('show');
 }
 
 function resetForm() {
   document.getElementById('workForm').reset();
   document.getElementById('tasks-container').innerHTML = '';
-  taskCount = 0; workerCounts = {}; matCounts = {}; taskPhotos = {}; incomingCount = 0;
-  document.getElementById('incoming-container').innerHTML = '';
-  initAttendance();
+  taskCount = 0; workerCounts = {}; matCounts = {}; taskPhotos = {};
   selectedLocation = '';
   document.getElementById('location').value = '';
   document.getElementById('location-grid').innerHTML = `<div id="loc-ph" style="grid-column:1/-1;color:#9E9E9E;font-size:13px;text-align:center;padding:10px">${T[lang].locPh}</div>`;
@@ -1012,341 +1210,215 @@ function resetForm() {
   addTask();
 }
 
-// ── נוכחות בוקר ─────────────────────────────────────
-const WORKERS_LIST = [
-  'מנסור','אבו חליל','כאמל עדנן','משה דדוש','רוני ברמי','מוחמד אבו טיר',
-  'מאיר פרץ','יוסף בן שמעון','אלי חגג'
-];
-
-function initAttendance() {
-  const container = document.getElementById('attendance-list');
-  container.innerHTML = '';
-  WORKERS_LIST.forEach(name => {
-    container.appendChild(createAttendRow(name));
-  });
-}
-
-function createAttendRow(name) {
-  const now = new Date();
-  const defaultTime = '07:00';
-  const div = document.createElement('div');
-  div.className = 'attend-row';
-  div.onclick = function(e) {
-    if (e.target.tagName === 'INPUT') return;
-    toggleAttend(div);
-  };
-  div.innerHTML = `
-    <div class="attend-check">✓</div>
-    <div class="attend-name">${name}</div>
-    <input type="time" class="attend-time" value="${defaultTime}" onclick="event.stopPropagation()">
-  `;
-  div.dataset.workerName = name;
-  return div;
-}
-
-function toggleAttend(row) {
-  if (row.classList.contains('present')) {
-    row.classList.remove('present');
-    row.classList.add('absent');
-  } else {
-    row.classList.remove('absent');
-    row.classList.add('present');
+// ── מזהה מכשיר/משתמש לטיוטות ─────────────────────────
+function getDeviceId() {
+  let id = localStorage.getItem('karni_device_id');
+  if (!id) {
+    id = 'dev_' + Date.now() + '_' + Math.random().toString(36).slice(2,8);
+    localStorage.setItem('karni_device_id', id);
   }
+  return id;
 }
 
-function addAttendWorker() {
-  const name = prompt(lang === 'he' ? 'שם העובד:' : 'اسم العامل:');
-  if (!name || !name.trim()) return;
-  const row = createAttendRow(name.trim());
-  document.getElementById('attendance-list').appendChild(row);
-}
+let currentDraftId = null;
 
-function getAttendanceData() {
-  const present = [], absent = [];
-  document.querySelectorAll('#attendance-list .attend-row').forEach(row => {
-    const name = row.dataset.workerName;
-    const time = row.querySelector('.attend-time').value;
-    if (row.classList.contains('present')) present.push(`${name} (${time})`);
-    else if (row.classList.contains('absent')) absent.push(name);
+// מספר יומן — מוקלד ידנית על ידי מנהל העבודה
+
+// ── שמירת טיוטה ─────────────────────────────────────
+function collectFormData() {
+  const tasks = [];
+  document.querySelectorAll('.task-card').forEach(card => {
+    const taskId = card.dataset.taskId;
+    const workers = [];
+    card.querySelectorAll('[data-role="worker-row"]').forEach(row => {
+      const sels = row.querySelectorAll('select');
+      const name = sels[0] ? sels[0].value : '';
+      const trade = sels[1] ? sels[1].value : '';
+      const hours = row.querySelector('input[type="number"]') ? row.querySelector('input[type="number"]').value : '';
+      if (name && name !== '__other__') workers.push({name, trade, hours});
+    });
+    const materials = [];
+    card.querySelectorAll('[data-role="mat-row"]').forEach(row => {
+      const name = row.querySelector('[data-role="mat-name"]').value.trim();
+      const qty = row.querySelector('[data-role="mat-qty"]').value;
+      const unit = row.querySelector('[data-role="mat-unit"]').value;
+      if (name) materials.push({name, qty, unit});
+    });
+    const photoList = (taskPhotos[taskId] || []).map(p => ({name: p.name, base64: p.base64}));
+    tasks.push({
+      task_num: taskId,
+      description: card.querySelector('[data-role="desc"]').value,
+      ramdor: card.querySelector('[data-role="ramdor"]') ? card.querySelector('[data-role="ramdor"]').value : '',
+      mazmin: card.querySelector('[data-role="mazmin"]').value === '__new__' ? (card.querySelector('[data-role="mazmin-custom"]')?card.querySelector('[data-role="mazmin-custom"]').value:'') : card.querySelector('[data-role="mazmin"]').value,
+      task_notes: card.querySelector('[data-role="task-notes"]').value,
+      workers, materials, photos: photoList,
+    });
   });
-  return { present, absent };
+
+  return {
+    draft_id: currentDraftId,
+    device_id: getDeviceId(),
+    work_date: document.getElementById('work_date').value,
+    manager: document.getElementById('manager_custom').value.trim() || document.getElementById('manager_name').value,
+    project: document.getElementById('project').value,
+    building: document.getElementById('building').value || document.getElementById('building_custom').value,
+    location: selectedLocation,
+    location_detail: document.getElementById('location_detail').value,
+    journal_day: document.getElementById('journal_day').value,
+    start_time: document.getElementById('start_time').value,
+    end_time: document.getElementById('end_time').value,
+    notes: document.getElementById('notes').value,
+    work_status: document.getElementById('work_status').value,
+    attendance_present: getAttendance('present'),
+    attendance_absent: getAttendance('absent'),
+    tasks, form_lang: lang,
+  };
 }
 
-// ── עבודות שנכנסו ────────────────────────────────────
-let incomingCount = 0;
-function addIncoming() {
-  incomingCount++;
-  const id = incomingCount;
-  const t = T[lang];
-  const proj = document.getElementById('project').value;
-  const mazOpts = `<option value="">${t.mazminOpt}</option>` +
-    ALL_MAZMINIM.map(m => `<option value="${m}">${m}</option>`).join('') +
-    `<option value="__new_inc__">+ ${lang==='he'?'הוסף חדש':'أضف جديد'}</option>`;
+function saveDraft() {
+  const data = collectFormData();
+  const statusEl = document.getElementById('draft-status');
+  statusEl.textContent = lang==='he' ? '💾 שומר...' : '💾 جارٍ الحفظ...';
 
-  const div = document.createElement('div');
-  div.className = 'task-card';
-  div.id = 'incoming-' + id;
-  div.dataset.incomingId = id;
-  div.innerHTML = `
-    <div class="task-card-header" style="background:#EDE7F6">
-      <span style="color:#4A148C">${lang==='he'?'בקשה':'طلب'} ${id}</span>
-      <button type="button" class="remove-task" onclick="removeIncoming(${id})">✕</button>
-    </div>
-    <div class="task-card-body">
-      <div class="field">
-        <textarea data-role="inc-desc" placeholder="${lang==='he'?'תיאור הבקשה *':'وصف الطلب *'}" style="min-height:60px"></textarea>
-      </div>
-      <div class="grid2">
-        <div class="field">
-          <label>${lang==='he'?'מזמין':'من طلب'}</label>
-          <select data-role="inc-mazmin">
-            ${mazOpts}
-          </select>
-        </div>
-        <div class="field">
-          <label>${lang==='he'?'מיקום':'الموقع'}</label>
-          <input type="text" data-role="inc-location" placeholder="${lang==='he'?'קומה, חדר...':'طابق، غرفة...'}" style="font-size:15px">
-        </div>
-      </div>
-      <div class="field">
-        <label>${lang==='he'?'דחיפות':'الأولوية'}</label>
-        <div style="display:flex;gap:8px;margin-top:4px">
-          <button type="button" data-role="inc-urgency" data-val="דחוף" onclick="setUrgency(this,${id})"
-            style="flex:1;padding:10px;border:2px solid #EF9A9A;border-radius:8px;background:white;color:#C62828;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit">
-            🔴 ${lang==='he'?'דחוף':'عاجل'}
-          </button>
-          <button type="button" data-role="inc-urgency" data-val="רגיל" onclick="setUrgency(this,${id})"
-            style="flex:1;padding:10px;border:2px solid #A5D6A7;border-radius:8px;background:white;color:#2E7D32;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit">
-            🟢 ${lang==='he'?'רגיל':'عادي'}
-          </button>
-          <button type="button" data-role="inc-urgency" data-val="מתוכנן" onclick="setUrgency(this,${id})"
-            style="flex:1;padding:10px;border:2px solid #90CAF9;border-radius:8px;background:white;color:#1565C0;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit">
-            🔵 ${lang==='he'?'מתוכנן':'مجدول'}
-          </button>
-        </div>
-        <input type="hidden" data-role="inc-urgency-val" value="">
-      </div>
-    </div>
-  `;
-  document.getElementById('incoming-container').appendChild(div);
-}
-
-function removeIncoming(id) {
-  const el = document.getElementById('incoming-' + id);
-  if (el) el.remove();
-}
-
-function setUrgency(btn, id) {
-  const card = document.getElementById('incoming-' + id);
-  card.querySelectorAll('[data-role="inc-urgency"]').forEach(b => {
-    b.style.opacity = '0.45';
-    b.style.fontWeight = '600';
+  fetch(SHEET_URL, {
+    method: 'POST', mode: 'no-cors',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({ action: 'saveDraft', ...data })
+  }).then(() => {
+    statusEl.textContent = lang==='he'
+      ? `✅ טיוטה נשמרה — ${new Date().toLocaleTimeString('he-IL',{hour:'2-digit',minute:'2-digit'})}`
+      : `✅ تم حفظ المسودة`;
+    setTimeout(() => statusEl.textContent = '', 4000);
+  }).catch(() => {
+    statusEl.textContent = lang==='he' ? '⚠️ שגיאה בשמירה' : '⚠️ خطأ في الحفظ';
   });
-  btn.style.opacity = '1';
-  btn.style.fontWeight = '800';
-  btn.style.transform = 'scale(1.03)';
-  card.querySelector('[data-role="inc-urgency-val"]').value = btn.dataset.val;
+}
+
+// ── הטיוטות שלי ─────────────────────────────────────
+function showDraftsModal() {
+  document.getElementById('drafts-modal').style.display = 'block';
+  const list = document.getElementById('drafts-list');
+  list.innerHTML = '<div style="text-align:center;color:#9E9E9E;padding:20px">טוען...</div>';
+  const showAll = document.getElementById('show-all-drafts').checked;
+  const url = showAll
+    ? `${SHEET_URL}?action=getDrafts&all=1`
+    : `${SHEET_URL}?action=getDrafts&device_id=${getDeviceId()}`;
+
+  fetch(url, { method: 'GET' })
+    .then(r => r.json())
+    .then(data => {
+      const drafts = data.drafts || [];
+      if (drafts.length === 0) {
+        list.innerHTML = `<div style="text-align:center;color:#9E9E9E;padding:20px">${lang==='he'?'אין טיוטות שמורות':'لا توجد مسودات محفوظة'}</div>`;
+        return;
+      }
+      list.innerHTML = drafts.map(d => `
+        <div style="border:1.5px solid #E0E0E0;border-radius:10px;padding:12px;margin-bottom:10px;cursor:pointer" onclick="loadDraft('${d.draft_id}')">
+          <div style="font-weight:700;font-size:14px;color:#1A237E">${d.work_date || '—'} | ${d.project || '—'}</div>
+          <div style="font-size:12px;color:#616161;margin-top:4px">${d.manager||''} | ${lang==='he'?'יומן':'سجل'} ${d.journal_day||'—'} | ${d.tasks_count||0} ${lang==='he'?'עבודות':'أعمال'}</div>
+          <div style="font-size:11px;color:#9E9E9E;margin-top:4px">${lang==='he'?'נשמר':'حُفظ'}: ${d.saved_at||''}</div>
+        </div>
+      `).join('');
+    })
+    .catch(() => {
+      list.innerHTML = `<div style="text-align:center;color:#C62828;padding:20px">${lang==='he'?'שגיאה בטעינה':'خطأ في التحميل'}</div>`;
+    });
+}
+
+function closeDraftsModal() {
+  document.getElementById('drafts-modal').style.display = 'none';
+}
+
+function loadDraft(draftId) {
+  fetch(`${SHEET_URL}?action=getDraftById&draft_id=${draftId}`, { method: 'GET' })
+    .then(r => r.json())
+    .then(data => {
+      if (!data || !data.draft) { alert('שגיאה בטעינת הטיוטה'); return; }
+      applyDraftToForm(data.draft);
+      closeDraftsModal();
+    });
+}
+
+function applyDraftToForm(d) {
+  currentDraftId = d.draft_id;
+  document.getElementById('work_date').value = d.work_date || '';
+  document.getElementById('project').value = d.project || '';
+  updateLocations();
+  setTimeout(() => {
+    if (d.building) {
+      document.getElementById('building').value = d.building;
+      document.querySelectorAll('#building-grid .location-btn').forEach(b => { if(b.textContent===d.building) b.classList.add('selected'); });
+      updateFloors(d.building);
+    }
+    setTimeout(() => {
+      if (d.location) {
+        document.getElementById('location').value = d.location;
+        selectedLocation = d.location;
+        document.querySelectorAll('#location-grid .location-btn').forEach(b => { if(b.textContent===d.location) b.classList.add('selected'); });
+      }
+    }, 100);
+  }, 100);
+  document.getElementById('location_detail').value = d.location_detail || '';
+  document.getElementById('manager_name').value = d.manager || '';
+  document.getElementById('journal_day').value = d.journal_day || '';
+  document.getElementById('start_time').value = d.start_time || '07:00';
+  document.getElementById('end_time').value = d.end_time || '15:00';
+  document.getElementById('notes').value = d.notes || '';
+  document.getElementById('work_status').value = d.work_status || 'בביצוע';
+
+  (d.attendance_present || '').split(', ').filter(Boolean).forEach(name => {
+    const row = document.getElementById('att-' + name);
+    if (row) { row.dataset.status = 'present'; row.className = 'attendance-row present';
+      row.querySelectorAll('.att-btn')[0].classList.add('yes'); }
+  });
+  updateAttSummary();
+
+  document.getElementById('tasks-container').innerHTML = '';
+  taskCount = 0; workerCounts = {}; matCounts = {}; taskPhotos = {};
+  (d.tasks || []).forEach(task => {
+    addTask();
+    const id = taskCount;
+    const card = document.getElementById('task-'+id);
+    card.querySelector('[data-role="desc"]').value = task.description || '';
+    if (card.querySelector('[data-role="ramdor"]')) card.querySelector('[data-role="ramdor"]').value = task.ramdor || '';
+    if (task.mazmin) card.querySelector('[data-role="mazmin"]').value = task.mazmin;
+    card.querySelector('[data-role="task-notes"]').value = task.task_notes || '';
+    checkTaskFilled(id);
+
+    document.getElementById('workers-'+id).innerHTML = '';
+    workerCounts[id] = 0;
+    (task.workers || []).forEach(w => {
+      addWorker(id, w.name);
+      const lastRow = document.getElementById('workers-'+id).lastElementChild;
+      if (lastRow) {
+        const sels = lastRow.querySelectorAll('select');
+        if (sels[1]) sels[1].value = w.trade || '';
+        const hrs = lastRow.querySelector('input[type="number"]');
+        if (hrs) hrs.value = w.hours || 8;
+      }
+    });
+
+    document.getElementById('materials-'+id).innerHTML = '';
+    matCounts[id] = 0;
+    (task.materials || []).forEach(m => {
+      addMaterial(id);
+      const lastRow = document.getElementById('materials-'+id).lastElementChild;
+      if (lastRow) {
+        lastRow.querySelector('[data-role="mat-name"]').value = m.name || '';
+        lastRow.querySelector('[data-role="mat-qty"]').value = m.qty || '';
+        lastRow.querySelector('[data-role="mat-unit"]').value = m.unit || '';
+      }
+    });
+  });
+
+  updateProgress();
+  document.getElementById('draft-status').textContent = lang==='he' ? '📂 טיוטה נטענה — המשך מילוי' : '📂 تم تحميل المسودة';
 }
 
 initDate();
 initAttendance();
 addTask();
-checkForDraft();
-
-// ── שמירת טיוטה ─────────────────────────────────────
-const DRAFT_KEY = 'yoman_draft_v1';
-let draftTimer = null;
-
-function collectDraftData() {
-  const tasks = [];
-  document.querySelectorAll('.task-card').forEach(card => {
-    const taskId = card.dataset.taskId;
-    if (!taskId) return;
-    const workers = [];
-    card.querySelectorAll('[data-role="worker-row"]').forEach(row => {
-      workers.push({
-        name: row.querySelector('input[type="text"]')?.value || '',
-        trade: row.querySelector('select')?.value || '',
-        hours: row.querySelector('input[type="number"]')?.value || '8',
-      });
-    });
-    tasks.push({
-      desc: card.querySelector('[data-role="desc"]')?.value || '',
-      journal: card.querySelector('[data-role="journal"]')?.value || '',
-      ramdor: card.querySelector('[data-role="ramdor"]')?.value || '',
-      mazmin: card.querySelector('[data-role="mazmin"]')?.value || '',
-      task_notes: card.querySelector('[data-role="task-notes"]')?.value || '',
-      workers,
-    });
-  });
-
-  const attendance = [];
-  document.querySelectorAll('#attendance-list .attend-row').forEach(row => {
-    attendance.push({
-      name: row.dataset.workerName,
-      status: row.classList.contains('present') ? 'present' : row.classList.contains('absent') ? 'absent' : '',
-      time: row.querySelector('.attend-time')?.value || '07:00',
-    });
-  });
-
-  return {
-    work_date: document.getElementById('work_date')?.value || '',
-    project: document.getElementById('project')?.value || '',
-    manager: document.getElementById('manager_name')?.value || '',
-    start_time: document.getElementById('start_time')?.value || '',
-    end_time: document.getElementById('end_time')?.value || '',
-    location: document.getElementById('location')?.value || '',
-    location_detail: document.getElementById('location_detail')?.value || '',
-    notes: document.getElementById('notes')?.value || '',
-    work_status: document.getElementById('work_status')?.value || '',
-    lang,
-    tasks,
-    attendance,
-    savedAt: new Date().toLocaleTimeString('he-IL', {hour:'2-digit', minute:'2-digit'}),
-  };
-}
-
-function saveDraft() {
-  try {
-    localStorage.setItem(DRAFT_KEY, JSON.stringify(collectDraftData()));
-    showToast('💾 טיוטה נשמרה');
-  } catch(e) {}
-}
-
-function autoSave() {
-  clearTimeout(draftTimer);
-  draftTimer = setTimeout(saveDraft, 2000);
-}
-
-function showToast(msg) {
-  const t = document.getElementById('draft-toast');
-  t.textContent = msg;
-  t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 2000);
-}
-
-function discardDraft() {
-  localStorage.removeItem(DRAFT_KEY);
-  document.getElementById('draft-banner').style.display = 'none';
-  showToast('🗑️ טיוטה נמחקה');
-}
-
-function restoreDraft() {
-  const raw = localStorage.getItem(DRAFT_KEY);
-  if (!raw) return;
-  try {
-    const d = JSON.parse(raw);
-    document.getElementById('draft-banner').style.display = 'none';
-
-    if (d.lang) setLang(d.lang);
-    if (d.work_date) document.getElementById('work_date').value = d.work_date;
-    if (d.project) { document.getElementById('project').value = d.project; updateLocations(); }
-    if (d.manager) document.getElementById('manager_name').value = d.manager;
-    if (d.start_time) document.getElementById('start_time').value = d.start_time;
-    if (d.end_time) document.getElementById('end_time').value = d.end_time;
-    if (d.location_detail) document.getElementById('location_detail').value = d.location_detail;
-    if (d.notes) document.getElementById('notes').value = d.notes;
-    if (d.work_status) document.getElementById('work_status').value = d.work_status;
-
-    // שחזור נוכחות
-    if (d.attendance && d.attendance.length) {
-      d.attendance.forEach(a => {
-        const row = document.querySelector(`#attendance-list .attend-row[data-worker-name="${a.name}"]`);
-        if (row) {
-          row.classList.remove('present','absent');
-          if (a.status) row.classList.add(a.status);
-          const t = row.querySelector('.attend-time');
-          if (t) t.value = a.time;
-        }
-      });
-    }
-
-    // שחזור משימות
-    document.getElementById('tasks-container').innerHTML = '';
-    taskCount = 0; workerCounts = {}; matCounts = {};
-    if (d.tasks && d.tasks.length) {
-      d.tasks.forEach(task => {
-        addTask();
-        const card = document.getElementById('task-' + taskCount);
-        if (!card) return;
-        card.querySelector('[data-role="desc"]').value = task.desc || '';
-        card.querySelector('[data-role="journal"]').value = task.journal || '';
-        card.querySelector('[data-role="ramdor"]').value = task.ramdor || '';
-        card.querySelector('[data-role="mazmin"]').value = task.mazmin || '';
-        card.querySelector('[data-role="task-notes"]').value = task.task_notes || '';
-        // שחזור פועלים (מעבר לראשון)
-        const wContainer = document.getElementById('workers-' + taskCount);
-        if (task.workers && task.workers.length > 1) {
-          task.workers.slice(1).forEach(() => addWorker(taskCount));
-        }
-        card.querySelectorAll('[data-role="worker-row"]').forEach((row, i) => {
-          const w = task.workers[i];
-          if (!w) return;
-          row.querySelector('input[type="text"]').value = w.name || '';
-          row.querySelector('select').value = w.trade || '';
-          row.querySelector('input[type="number"]').value = w.hours || '8';
-        });
-      });
-    }
-
-    updateProgress();
-    showToast('✅ טיוטה שוחזרה');
-  } catch(e) { showToast('שגיאה בשחזור'); }
-}
-
-function checkForDraft() {
-  const raw = localStorage.getItem(DRAFT_KEY);
-  if (!raw) return;
-  try {
-    const d = JSON.parse(raw);
-    if (!d.work_date && !d.project) return;
-    const banner = document.getElementById('draft-banner');
-    banner.querySelector('.draft-banner-text').textContent =
-      `📝 יש טיוטה מ-${d.savedAt || '—'} (${d.project || 'ללא פרויקט'}) — רוצה להמשיך?`;
-    banner.style.display = 'block';
-  } catch(e) {}
-}
-
-// חיבור auto-save לכל שדות הטופס
-document.addEventListener('input', autoSave);
-document.addEventListener('change', autoSave);
-
-// ── PWA: Service Worker ──────────────────────────────
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('./sw.js').catch(() => {});
-  });
-}
-
-// ── PWA: Install banner ──────────────────────────────
-let deferredInstallPrompt = null;
-window.addEventListener('beforeinstallprompt', e => {
-  e.preventDefault();
-  deferredInstallPrompt = e;
-  document.getElementById('install-banner').style.display = 'flex';
-});
-window.addEventListener('appinstalled', () => {
-  document.getElementById('install-banner').style.display = 'none';
-  deferredInstallPrompt = null;
-});
-function installApp() {
-  if (!deferredInstallPrompt) return;
-  deferredInstallPrompt.prompt();
-  deferredInstallPrompt.userChoice.then(() => {
-    deferredInstallPrompt = null;
-    document.getElementById('install-banner').style.display = 'none';
-  });
-}
+loadSettingsFromSheet();
 </script>
-
-<!-- Install banner (מוצג רק ב-Android Chrome כשהאפליקציה לא מותקנת) -->
-<div id="install-banner" style="display:none;position:fixed;bottom:0;left:0;right:0;background:#1A237E;color:white;padding:12px 16px;align-items:center;justify-content:space-between;gap:10px;z-index:200;box-shadow:0 -2px 10px rgba(0,0,0,0.3);">
-  <div style="font-size:14px;font-weight:600;">📲 התקן כאפליקציה על המסך</div>
-  <div style="display:flex;gap:8px;">
-    <button onclick="document.getElementById('install-banner').style.display='none'" style="background:transparent;border:1px solid rgba(255,255,255,0.4);color:white;padding:7px 14px;border-radius:8px;font-size:13px;cursor:pointer;font-family:inherit;">לא עכשיו</button>
-    <button onclick="installApp()" style="background:white;color:#1A237E;border:none;padding:7px 16px;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;">התקן</button>
-  </div>
-</div>
-
-
-</body></html>
+</body>
+</html>
