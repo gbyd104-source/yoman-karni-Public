@@ -56,6 +56,16 @@
   .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
   .divider { height: 1px; background: #EEE; margin: 12px 0; }
 
+  /* ATTENDANCE */
+  .attend-row { display:flex; align-items:center; gap:10px; padding:10px 12px; border:2px solid var(--border); border-radius:10px; background:white; transition:all 0.15s; cursor:pointer; }
+  .attend-row.present { border-color:#66BB6A; background:#F1F8E9; }
+  .attend-row.absent  { border-color:#EF9A9A; background:#FFF5F5; opacity:0.6; }
+  .attend-check { width:26px; height:26px; border-radius:50%; border:2px solid var(--border); display:flex; align-items:center; justify-content:center; font-size:15px; flex-shrink:0; transition:all 0.15s; }
+  .attend-row.present .attend-check { background:#2E7D32; border-color:#2E7D32; color:white; }
+  .attend-name { flex:1; font-size:15px; font-weight:600; }
+  .attend-time { width:88px; padding:6px 8px; border:1.5px solid var(--border); border-radius:7px; font-size:14px; font-family:inherit; background:white; display:none; }
+  .attend-row.present .attend-time { display:block; }
+
   /* LOCATION */
   .location-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; }
   .location-btn { padding: 11px 6px; border: 2px solid var(--border); border-radius: 8px; background: white; font-size: 12px; font-weight: 600; color: var(--gray-dark); cursor: pointer; text-align: center; font-family: inherit; transition: all 0.15s; }
@@ -154,6 +164,16 @@
 </div>
 
 <form id="workForm" onsubmit="submitForm(event)">
+
+<!-- 0. נוכחות בוקר -->
+<div class="section">
+  <div class="section-header" style="background:#2E7D32"><span class="num" style="background:rgba(255,255,255,0.2)">✓</span> <span id="s0-title">נוכחות בוקר</span></div>
+  <div class="section-body">
+    <div class="hint" style="margin-bottom:12px" id="attend-hint">סמן כל עובד שהגיע היום לאתר</div>
+    <div id="attendance-list" style="display:flex;flex-direction:column;gap:8px"></div>
+    <button type="button" onclick="addAttendWorker()" style="margin-top:10px;background:var(--light-green);border:1.5px dashed #A5D6A7;border-radius:7px;color:var(--green);font-size:13px;font-weight:600;padding:9px;cursor:pointer;width:100%;font-family:inherit">+ <span id="lbl-add-attend">הוסף עובד שלא ברשימה</span></button>
+  </div>
+</div>
 
 <!-- 1. פרטי יום -->
 <div class="section">
@@ -905,6 +925,12 @@ function submitForm(e) {
     photos_data: SHEET_URL ? task.photos.map(p=>p.base64) : [],
   }));
 
+  // נוכחות
+  const attend = getAttendanceData();
+  baseData.attendance_present = attend.present.join(', ');
+  baseData.attendance_absent = attend.absent.join(', ');
+  baseData.attendance_count = attend.present.length;
+
   // איסוף עבודות שנכנסו
   const incoming = [];
   document.querySelectorAll('#incoming-container .task-card').forEach(card => {
@@ -949,6 +975,7 @@ function resetForm() {
   document.getElementById('tasks-container').innerHTML = '';
   taskCount = 0; workerCounts = {}; matCounts = {}; taskPhotos = {}; incomingCount = 0;
   document.getElementById('incoming-container').innerHTML = '';
+  initAttendance();
   selectedLocation = '';
   document.getElementById('location').value = '';
   document.getElementById('location-grid').innerHTML = `<div id="loc-ph" style="grid-column:1/-1;color:#9E9E9E;font-size:13px;text-align:center;padding:10px">${T[lang].locPh}</div>`;
@@ -959,6 +986,66 @@ function resetForm() {
   document.getElementById('submit-btn').textContent = T[lang].btnSubmit;
   initDate();
   addTask();
+}
+
+// ── נוכחות בוקר ─────────────────────────────────────
+const WORKERS_LIST = [
+  'מנסור','אבו חליל','כאמל עדנן','משה דדוש','רוני ברמי','מוחמד אבו טיר',
+  'מאיר פרץ','יוסף בן שמעון','אלי חגג'
+];
+
+function initAttendance() {
+  const container = document.getElementById('attendance-list');
+  container.innerHTML = '';
+  WORKERS_LIST.forEach(name => {
+    container.appendChild(createAttendRow(name));
+  });
+}
+
+function createAttendRow(name) {
+  const now = new Date();
+  const defaultTime = '07:00';
+  const div = document.createElement('div');
+  div.className = 'attend-row';
+  div.onclick = function(e) {
+    if (e.target.tagName === 'INPUT') return;
+    toggleAttend(div);
+  };
+  div.innerHTML = `
+    <div class="attend-check">✓</div>
+    <div class="attend-name">${name}</div>
+    <input type="time" class="attend-time" value="${defaultTime}" onclick="event.stopPropagation()">
+  `;
+  div.dataset.workerName = name;
+  return div;
+}
+
+function toggleAttend(row) {
+  if (row.classList.contains('present')) {
+    row.classList.remove('present');
+    row.classList.add('absent');
+  } else {
+    row.classList.remove('absent');
+    row.classList.add('present');
+  }
+}
+
+function addAttendWorker() {
+  const name = prompt(lang === 'he' ? 'שם העובד:' : 'اسم العامل:');
+  if (!name || !name.trim()) return;
+  const row = createAttendRow(name.trim());
+  document.getElementById('attendance-list').appendChild(row);
+}
+
+function getAttendanceData() {
+  const present = [], absent = [];
+  document.querySelectorAll('#attendance-list .attend-row').forEach(row => {
+    const name = row.dataset.workerName;
+    const time = row.querySelector('.attend-time').value;
+    if (row.classList.contains('present')) present.push(`${name} (${time})`);
+    else if (row.classList.contains('absent')) absent.push(name);
+  });
+  return { present, absent };
 }
 
 // ── עבודות שנכנסו ────────────────────────────────────
@@ -1038,6 +1125,7 @@ function setUrgency(btn, id) {
 }
 
 initDate();
+initAttendance();
 addTask();
 
 // ── PWA: Service Worker ──────────────────────────────
