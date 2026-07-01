@@ -304,9 +304,26 @@
   </div>
 </div>
 
-<!-- 4. הערות כלליות -->
+<!-- 4. עבודות חדשות והזמנת חומרים -->
 <div class="section">
-  <div class="section-header"><span class="num">4</span> <span id="s4-title">הערות כלליות</span></div>
+  <div class="section-header"><span class="num">4</span> <span id="s4-title">עבודות חדשות והזמנות</span></div>
+  <div class="section-body">
+    <div class="field">
+      <label id="l-new-tasks">📋 עבודות חדשות שהתקבלו</label>
+      <textarea id="new_tasks" placeholder="תאר עבודות חדשות שהתקבלו היום לביצוע בהמשך — מה, איפה, מי ביקש..." style="min-height:90px"></textarea>
+      <div class="hint">עבודות שהוזמנו היום ועדיין לא בוצעו</div>
+    </div>
+    <div class="field">
+      <label id="l-materials-order">🧱 הזמנת חומרים</label>
+      <textarea id="materials_order" placeholder="חומרים שצריך להזמין — שם חומר, כמות, לאיזו עבודה..." style="min-height:90px"></textarea>
+      <div class="hint">חומרים שחסרים ויש להזמין בהקדם</div>
+    </div>
+  </div>
+</div>
+
+<!-- 5. הערות כלליות -->
+<div class="section">
+  <div class="section-header"><span class="num">5</span> <span id="s5-title">הערות כלליות</span></div>
   <div class="section-body">
     <div class="field">
       <label id="l-notes">הערות, בעיות, המשך מחר</label>
@@ -425,7 +442,7 @@ const ALL_MAZMINIM = ['אבי','אוריאל','איתמר','ברק','גנדי','
 const T = {
   he: {
     title:'📋 יומן עבודה', company:'קרני השחר בע"מ',
-    s1:'פרטי היום', s2:'מיקום העבודה', s3:'עבודות שבוצעו', s4:'הערות כלליות',
+    s1:'פרטי היום', s2:'מיקום העבודה', s3:'עבודות שבוצעו', s4:'עבודות חדשות והזמנות', s5:'הערות כלליות',
     lDate:'תאריך העבודה', lProj:'פרויקט', lMgr:'מנהל עבודה',
     lStart:'שעת התחלה', lEnd:'שעת סיום',
     lArea:'אזור / קומה', lLocDetail:'פירוט נוסף',
@@ -451,7 +468,7 @@ const T = {
   },
   ar: {
     title:'📋 سجل العمل', company:'شركة كرني هشاحر',
-    s1:'تفاصيل اليوم', s2:'موقع العمل', s3:'الأعمال المنجزة', s4:'ملاحظات عامة',
+    s1:'تفاصيل اليوم', s2:'موقع العمل', s3:'الأعمال المنجزة', s4:'أعمال جديدة وطلبات', s5:'ملاحظات عامة',
     lDate:'تاريخ العمل', lProj:'المشروع', lMgr:'مشرف العمل',
     lStart:'وقت البدء', lEnd:'وقت الانتهاء',
     lArea:'المنطقة / الطابق', lLocDetail:'تفاصيل إضافية',
@@ -589,6 +606,7 @@ function setLang(l) {
   document.getElementById('s2-title').textContent = t.s2;
   document.getElementById('s3-title').textContent = t.s3;
   document.getElementById('s4-title').textContent = t.s4;
+  if (document.getElementById('s5-title')) document.getElementById('s5-title').textContent = t.s5;
   document.getElementById('l-date').textContent = t.lDate;
   document.getElementById('l-project').textContent = t.lProj;
   document.getElementById('l-manager').textContent = t.lMgr;
@@ -1149,6 +1167,10 @@ function submitForm(e) {
     start_time: document.getElementById('start_time').value,
     end_time: document.getElementById('end_time').value,
     notes: document.getElementById('notes').value,
+    new_tasks: document.getElementById('new_tasks').value,
+    materials_order: document.getElementById('materials_order').value,
+    new_tasks: document.getElementById('new_tasks').value,
+    materials_order: document.getElementById('materials_order').value,
     work_status: document.getElementById('work_status').value,
     form_lang: lang,
   };
@@ -1364,6 +1386,8 @@ function applyDraftToForm(d) {
   document.getElementById('start_time').value = d.start_time || '07:00';
   document.getElementById('end_time').value = d.end_time || '15:00';
   document.getElementById('notes').value = d.notes || '';
+  if (document.getElementById('new_tasks')) document.getElementById('new_tasks').value = d.new_tasks || '';
+  if (document.getElementById('materials_order')) document.getElementById('materials_order').value = d.materials_order || '';
   document.getElementById('work_status').value = d.work_status || 'בביצוע';
 
   (d.attendance_present || '').split(', ').filter(Boolean).forEach(name => {
