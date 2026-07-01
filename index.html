@@ -119,6 +119,15 @@
   .photo-input { display: none; }
   .photo-count { font-size: 11px; color: var(--gray-mid); margin-top: 4px; }
 
+  /* DRAFT TOAST */
+  .draft-toast { position:fixed; bottom:80px; left:50%; transform:translateX(-50%); background:#323232; color:white; padding:10px 20px; border-radius:24px; font-size:13px; font-weight:600; z-index:300; opacity:0; transition:opacity 0.3s; pointer-events:none; white-space:nowrap; }
+  .draft-toast.show { opacity:1; }
+  .draft-banner { margin:10px 10px 0; background:#FFF8E1; border:1.5px solid #FFE082; border-radius:12px; padding:13px 15px; display:none; }
+  .draft-banner-row { display:flex; align-items:center; justify-content:space-between; gap:10px; }
+  .draft-banner-text { font-size:13px; font-weight:600; color:#E65100; }
+  .draft-banner-btns { display:flex; gap:8px; flex-shrink:0; }
+  .draft-banner-btns button { padding:7px 14px; border-radius:8px; font-size:13px; font-weight:700; cursor:pointer; font-family:inherit; border:none; }
+
   /* SECTION LABELS */
   .sub-label { font-size: 11px; font-weight: 700; color: var(--gray-mid); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; margin-top: 2px; }
   .sub-section { border: 1px solid #EEE; border-radius: 8px; padding: 10px; background: #FAFAFA; }
@@ -377,6 +386,20 @@
   <button type="submit" class="submit-btn" id="submit-btn">✅ שלח יומן עבודה</button>
 </div>
 </form>
+
+<!-- Draft banner -->
+<div class="draft-banner" id="draft-banner">
+  <div class="draft-banner-row">
+    <div class="draft-banner-text">📝 יש טיוטה שמורה — רוצה להמשיך ממנה?</div>
+    <div class="draft-banner-btns">
+      <button onclick="discardDraft()" style="background:#EEE;color:#333">מחק</button>
+      <button onclick="restoreDraft()" style="background:#E65100;color:white">שחזר</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="draft-toast" id="draft-toast">💾 טיוטה נשמרה</div>
 
 <div class="success-screen" id="success-screen">
   <div class="success-icon">✅</div>
@@ -967,6 +990,7 @@ function showSuccess(data, taskCount) {
   document.getElementById('suc-p').innerHTML = lang==='he'
     ? `${formatDate(data.work_date)} | ${data.project}<br>${taskCount} עבודות נשמרו לגיליון`
     : `${formatDate(data.work_date)} | ${data.project}<br>تم حفظ ${taskCount} أعمال`;
+  localStorage.removeItem(DRAFT_KEY);
   document.getElementById('success-screen').classList.add('show');
 }
 
@@ -1127,6 +1151,165 @@ function setUrgency(btn, id) {
 initDate();
 initAttendance();
 addTask();
+checkForDraft();
+
+// ── שמירת טיוטה ─────────────────────────────────────
+const DRAFT_KEY = 'yoman_draft_v1';
+let draftTimer = null;
+
+function collectDraftData() {
+  const tasks = [];
+  document.querySelectorAll('.task-card').forEach(card => {
+    const taskId = card.dataset.taskId;
+    if (!taskId) return;
+    const workers = [];
+    card.querySelectorAll('[data-role="worker-row"]').forEach(row => {
+      workers.push({
+        name: row.querySelector('input[type="text"]')?.value || '',
+        trade: row.querySelector('select')?.value || '',
+        hours: row.querySelector('input[type="number"]')?.value || '8',
+      });
+    });
+    tasks.push({
+      desc: card.querySelector('[data-role="desc"]')?.value || '',
+      journal: card.querySelector('[data-role="journal"]')?.value || '',
+      ramdor: card.querySelector('[data-role="ramdor"]')?.value || '',
+      mazmin: card.querySelector('[data-role="mazmin"]')?.value || '',
+      task_notes: card.querySelector('[data-role="task-notes"]')?.value || '',
+      workers,
+    });
+  });
+
+  const attendance = [];
+  document.querySelectorAll('#attendance-list .attend-row').forEach(row => {
+    attendance.push({
+      name: row.dataset.workerName,
+      status: row.classList.contains('present') ? 'present' : row.classList.contains('absent') ? 'absent' : '',
+      time: row.querySelector('.attend-time')?.value || '07:00',
+    });
+  });
+
+  return {
+    work_date: document.getElementById('work_date')?.value || '',
+    project: document.getElementById('project')?.value || '',
+    manager: document.getElementById('manager_name')?.value || '',
+    start_time: document.getElementById('start_time')?.value || '',
+    end_time: document.getElementById('end_time')?.value || '',
+    location: document.getElementById('location')?.value || '',
+    location_detail: document.getElementById('location_detail')?.value || '',
+    notes: document.getElementById('notes')?.value || '',
+    work_status: document.getElementById('work_status')?.value || '',
+    lang,
+    tasks,
+    attendance,
+    savedAt: new Date().toLocaleTimeString('he-IL', {hour:'2-digit', minute:'2-digit'}),
+  };
+}
+
+function saveDraft() {
+  try {
+    localStorage.setItem(DRAFT_KEY, JSON.stringify(collectDraftData()));
+    showToast('💾 טיוטה נשמרה');
+  } catch(e) {}
+}
+
+function autoSave() {
+  clearTimeout(draftTimer);
+  draftTimer = setTimeout(saveDraft, 2000);
+}
+
+function showToast(msg) {
+  const t = document.getElementById('draft-toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2000);
+}
+
+function discardDraft() {
+  localStorage.removeItem(DRAFT_KEY);
+  document.getElementById('draft-banner').style.display = 'none';
+  showToast('🗑️ טיוטה נמחקה');
+}
+
+function restoreDraft() {
+  const raw = localStorage.getItem(DRAFT_KEY);
+  if (!raw) return;
+  try {
+    const d = JSON.parse(raw);
+    document.getElementById('draft-banner').style.display = 'none';
+
+    if (d.lang) setLang(d.lang);
+    if (d.work_date) document.getElementById('work_date').value = d.work_date;
+    if (d.project) { document.getElementById('project').value = d.project; updateLocations(); }
+    if (d.manager) document.getElementById('manager_name').value = d.manager;
+    if (d.start_time) document.getElementById('start_time').value = d.start_time;
+    if (d.end_time) document.getElementById('end_time').value = d.end_time;
+    if (d.location_detail) document.getElementById('location_detail').value = d.location_detail;
+    if (d.notes) document.getElementById('notes').value = d.notes;
+    if (d.work_status) document.getElementById('work_status').value = d.work_status;
+
+    // שחזור נוכחות
+    if (d.attendance && d.attendance.length) {
+      d.attendance.forEach(a => {
+        const row = document.querySelector(`#attendance-list .attend-row[data-worker-name="${a.name}"]`);
+        if (row) {
+          row.classList.remove('present','absent');
+          if (a.status) row.classList.add(a.status);
+          const t = row.querySelector('.attend-time');
+          if (t) t.value = a.time;
+        }
+      });
+    }
+
+    // שחזור משימות
+    document.getElementById('tasks-container').innerHTML = '';
+    taskCount = 0; workerCounts = {}; matCounts = {};
+    if (d.tasks && d.tasks.length) {
+      d.tasks.forEach(task => {
+        addTask();
+        const card = document.getElementById('task-' + taskCount);
+        if (!card) return;
+        card.querySelector('[data-role="desc"]').value = task.desc || '';
+        card.querySelector('[data-role="journal"]').value = task.journal || '';
+        card.querySelector('[data-role="ramdor"]').value = task.ramdor || '';
+        card.querySelector('[data-role="mazmin"]').value = task.mazmin || '';
+        card.querySelector('[data-role="task-notes"]').value = task.task_notes || '';
+        // שחזור פועלים (מעבר לראשון)
+        const wContainer = document.getElementById('workers-' + taskCount);
+        if (task.workers && task.workers.length > 1) {
+          task.workers.slice(1).forEach(() => addWorker(taskCount));
+        }
+        card.querySelectorAll('[data-role="worker-row"]').forEach((row, i) => {
+          const w = task.workers[i];
+          if (!w) return;
+          row.querySelector('input[type="text"]').value = w.name || '';
+          row.querySelector('select').value = w.trade || '';
+          row.querySelector('input[type="number"]').value = w.hours || '8';
+        });
+      });
+    }
+
+    updateProgress();
+    showToast('✅ טיוטה שוחזרה');
+  } catch(e) { showToast('שגיאה בשחזור'); }
+}
+
+function checkForDraft() {
+  const raw = localStorage.getItem(DRAFT_KEY);
+  if (!raw) return;
+  try {
+    const d = JSON.parse(raw);
+    if (!d.work_date && !d.project) return;
+    const banner = document.getElementById('draft-banner');
+    banner.querySelector('.draft-banner-text').textContent =
+      `📝 יש טיוטה מ-${d.savedAt || '—'} (${d.project || 'ללא פרויקט'}) — רוצה להמשיך?`;
+    banner.style.display = 'block';
+  } catch(e) {}
+}
+
+// חיבור auto-save לכל שדות הטופס
+document.addEventListener('input', autoSave);
+document.addEventListener('change', autoSave);
 
 // ── PWA: Service Worker ──────────────────────────────
 if ('serviceWorker' in navigator) {
